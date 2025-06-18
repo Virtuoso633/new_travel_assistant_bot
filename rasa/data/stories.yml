@@ -1,0 +1,149 @@
+version: "3.1"
+
+stories:
+- story: basic greeting and goodbye
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: goodbye
+  - action: utter_goodbye
+
+- story: weather inquiry with guided options
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: ask_weather
+  - action: utter_weather_options
+  - intent: ask_weather
+    entities:
+    - location: "Delhi"
+  - action: action_get_weather
+  - action: utter_after_weather
+
+- story: direct weather inquiry
+  steps:
+  - intent: ask_weather
+    entities:
+    - location: "Mumbai"
+  - action: action_get_weather
+  - action: utter_after_weather
+
+- story: packing recommendations with guided options
+  steps:
+  - intent: recommend_packing
+  - action: utter_packing_options
+  - intent: recommend_packing
+    entities:
+    - location: "Goa"
+  - action: action_recommend_packing
+  - action: utter_after_packing
+
+- story: complete travel planning flow
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: start_travel_planning
+  - action: travel_info_form
+  - active_loop: travel_info_form
+  - slot_was_set:
+    - requested_slot: destination_city
+  - intent: inform
+    entities:
+    - location: "Paris"
+  - slot_was_set:
+    - destination_city: "Paris"
+  - slot_was_set:
+    - requested_slot: start_date
+  - intent: inform
+  - slot_was_set:
+    - start_date: "next week"
+  - slot_was_set:
+    - requested_slot: end_date
+  - intent: inform
+  - slot_was_set:
+    - end_date: "weekend trip"
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: utter_submit
+  - action: action_get_weather
+  - action: action_recommend_packing
+
+- story: FAQ handling - what is rasa
+  steps:
+  - intent: faq_what_is_rasa
+  - action: utter_faq_what_is_rasa
+
+- story: FAQ handling - who built you
+  steps:
+  - intent: faq_who_built_you
+  - action: utter_faq_who_built_you
+
+- story: FAQ handling - trip planning
+  steps:
+  - intent: faq_trip_planning
+  - action: utter_faq_how_to_plan_trip
+
+- story: fallback handling with guidance
+  steps:
+  - intent: nlu_fallback
+  - action: utter_default_fallback
+
+- story: weather to packing flow
+  steps:
+  - intent: ask_weather
+    entities:
+    - location: "Delhi"
+  - action: action_get_weather
+  - action: utter_after_weather
+  - intent: recommend_packing
+  - action: action_recommend_packing
+  - action: utter_after_packing
+
+- story: packing to weather flow
+  steps:
+  - intent: recommend_packing
+    entities:
+    - location: "Mumbai"
+  - action: action_recommend_packing
+  - action: utter_after_packing
+  - intent: ask_weather
+  - action: action_get_weather
+  - action: utter_after_weather
+
+- story: form interruption and recovery
+  steps:
+  - intent: start_travel_planning
+  - action: travel_info_form
+  - active_loop: travel_info_form
+  - intent: ask_weather
+    entities:
+    - location: "Sydney"
+  - action: action_get_weather
+  - action: utter_after_weather
+  - action: travel_info_form
+  - active_loop: travel_info_form
+
+- story: guided conversation from greeting
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: faq_trip_planning
+  - action: utter_faq_how_to_plan_trip
+  - intent: ask_weather
+  - action: action_get_weather
+  - action: utter_after_weather
+  
+- story: complete flow with buttons
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: recommend_packing
+    entities:
+    - location: "shimla"
+  - action: action_get_weather
+  - action: action_recommend_packing
+  - action: utter_after_packing
+  - intent: ask_weather
+  - action: utter_weather_options
+

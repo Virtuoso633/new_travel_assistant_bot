@@ -1,0 +1,148 @@
+
+.chat-container {
+  width: 400px;
+  height: 600px;
+  margin: 50px auto;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+}
+
+.chat-header {
+  background: #667eea;
+  color: white;
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+}
+
+.chat-header h3 {
+  margin: 0;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.message {
+  padding: 10px 15px;
+  border-radius: 20px;
+  max-width: 80%;
+  word-wrap: break-word;
+}
+
+.message.user {
+  background-color: #667eea;
+  color: white;
+  align-self: flex-end;
+  border-bottom-right-radius: 5px;
+}
+
+.message.bot {
+  background-color: #e5e5ea;
+  color: black;
+  align-self: flex-start;
+  border-bottom-left-radius: 5px;
+}
+
+.typing-indicator {
+  display: flex;
+  padding: 10px;
+}
+
+.typing-indicator span {
+  height: 8px;
+  width: 8px;
+  margin: 0 2px;
+  background-color: #999;
+  border-radius: 50%;
+  display: inline-block;
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+.typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1.0); }
+}
+
+.chat-input-form {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #ccc;
+  background: #fff;
+}
+
+.chat-input-form input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  margin-right: 10px;
+}
+
+.chat-input-form button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #667eea;
+  color: white;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.chat-input-form button:disabled {
+  background-color: #ccc;
+}
+
+.button-container {
+  display: flex;
+  flex-wrap: wrap; /* Allows buttons to wrap to the next line if they don't fit */
+  gap: 8px; /* Spacing between buttons */
+  margin: 5px 0; /* Add some vertical margin */
+  /* The button container itself shouldn't have the bot message background,
+     as it's a child of .message.bot */
+}
+
+.chat-button {
+  padding: 8px 16px;
+  background: #667eea; /* Same as user message and input button for consistency */
+  color: white;
+  border: none;
+  border-radius: 20px; /* Consistent border-radius */
+  cursor: pointer;
+  font-size: 14px; /* Or 0.9em to match other text */
+  transition: background 0.3s;
+  text-align: left; /* Or center, depending on preference */
+}
+
+.chat-button:hover {
+  background: #5a6fd8; /* Darker shade on hover */
+}
+
+/* Ensure the .message.bot container that holds buttons still looks like a bot message */
+/* This is important if you want the buttons to appear within a bot message bubble */
+.message.bot.button-container {
+  /* This class is applied to the div that has `message bot` and also `button-container`
+     In the JS, the div with buttons has `message bot button-container`
+     So, we can style it directly.
+     If the buttons are meant to be *inside* a bot message bubble,
+     the .button-container style itself might not need a background.
+     The parent .message.bot will provide the bubble.
+  */
+  background-color: #e5e5ea; /* Bot message background */
+  padding: 10px 15px; /* Consistent padding with other messages */
+  /* align-self: flex-start; is already handled by .message.bot */
+  /* border-bottom-left-radius: 5px; is already handled by .message.bot */
+}

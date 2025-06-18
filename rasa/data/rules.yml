@@ -1,0 +1,44 @@
+version: "3.1"
+rules:
+- rule: Say goodbye anytime the user says goodbye
+  steps:
+  - intent: goodbye
+  - action: utter_goodbye
+
+- rule: Activate travel info form for complete planning
+  steps:
+  - intent: start_travel_planning
+  - action: travel_info_form
+  - active_loop: travel_info_form
+
+- rule: Submit travel info form
+  condition:
+  - active_loop: travel_info_form
+  steps:
+  - action: travel_info_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: utter_submit
+  - action: action_get_weather
+  - action: action_recommend_packing
+
+- rule: Handle fallback with guidance
+  steps:
+  - intent: nlu_fallback
+  - action: utter_default_fallback
+
+- rule: FAQ responses with navigation
+  steps:
+  - intent: faq_what_is_rasa
+  - action: utter_faq_what_is_rasa
+
+- rule: FAQ who built response with navigation
+  steps:
+  - intent: faq_who_built_you
+  - action: utter_faq_who_built_you
+
+- rule: FAQ trip planning response with navigation
+  steps:
+  - intent: faq_trip_planning
+  - action: utter_faq_how_to_plan_trip

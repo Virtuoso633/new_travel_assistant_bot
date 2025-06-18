@@ -1,0 +1,217 @@
+version: '3.1'
+
+intents:
+  - greet
+  - goodbye
+  - ask_weather
+  - recommend_packing
+  - faq_what_is_rasa
+  - faq_who_built_you
+  - faq_trip_planning
+  - inform
+  - affirm
+  - deny
+  - nlu_fallback
+  - start_travel_planning
+
+entities:
+  - location
+  - date
+  - travel_dates
+
+slots:
+  destination_city:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: location
+      - type: from_text
+        conditions:
+          - active_loop: travel_info_form
+            requested_slot: destination_city
+  start_date:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: date
+      - type: from_text
+        conditions:
+          - active_loop: travel_info_form
+            requested_slot: start_date
+  end_date:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: travel_dates
+      - type: from_text
+        conditions:
+          - active_loop: travel_info_form
+            requested_slot: end_date
+  weather_info:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: custom
+  packing_suggestions:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: custom
+
+forms:
+  travel_info_form:
+    required_slots:
+      - destination_city
+      - start_date
+      - end_date
+
+responses:
+  # Other responses remain the same... (utter_greet, utter_goodbye, etc.)
+  # --- PASTE YOUR OTHER RESPONSES HERE ---
+
+  utter_greet:
+    - text: "🧳 Welcome to your Travel Assistant Bot! I'm here to help you plan your perfect trip."
+      buttons:
+        - title: "🌤️ Check Weather"
+          payload: "/ask_weather"
+        - title: "🎒 Get Packing Tips"
+          payload: "/recommend_packing"
+        - title: "📋 Plan Complete Trip"
+          payload: "/start_travel_planning"
+        - title: "❓ FAQ & Help"
+          payload: "/faq_trip_planning"
+
+  utter_goodbye:
+    - text: "Safe travels! Have a wonderful trip! 🌟 Feel free to come back anytime for travel assistance."
+      buttons:
+        - title: "🔄 Start New Planning"
+          payload: "/greet"
+
+  utter_ask_destination_city:
+    - text: "Which city are you planning to visit? 🏙️"
+      buttons:
+        - title: "Popular: Delhi"
+          payload: '/inform{"location":"Delhi"}'
+        - title: "Popular: Mumbai"
+          payload: '/inform{"location":"Mumbai"}'
+        - title: "Popular: Paris"
+          payload: '/inform{"location":"Paris"}'
+        - title: "Type Custom City"
+          payload: "I want to visit a different city"
+
+  utter_ask_start_date:
+    - text: "When are you planning to start your trip? 📅"
+      buttons:
+        - title: "This Weekend"
+          payload: '/inform{"date":"this weekend"}'
+        - title: "Next Week"
+          payload: '/inform{"date":"next week"}'
+        - title: "Next Month"
+          payload: '/inform{"date":"next month"}'
+        - title: "Type Specific Date"
+          payload: "I want to specify exact date"
+
+  utter_ask_end_date:
+    - text: "When will you return from your trip? 🔙"
+      buttons:
+        - title: "Same Day Return"
+          payload: '/inform{"travel_dates":"same day"}'
+        - title: "Weekend Trip (2-3 days)"
+          payload: '/inform{"travel_dates":"weekend trip"}'
+        - title: "One Week"
+          payload: '/inform{"travel_dates":"one week"}'
+        - title: "Type Custom Duration"
+          payload: "I want to specify exact return date"
+
+  utter_faq_what_is_rasa:
+    - text: "🤖 Rasa is an open-source framework for building conversational AI assistants and chatbots. It provides tools for natural language understanding, dialogue management, and integration with external systems."
+      buttons:
+        - title: "🏠 Back to Main Menu"
+          payload: "/greet"
+        - title: "👨‍💻 Who built this bot?"
+          payload: "/faq_who_built_you"
+        - title: "🧳 Start Trip Planning"
+          payload: "/start_travel_planning"
+
+  utter_faq_who_built_you:
+    - text: "👨‍💻 I'm a Travel Assistant Bot built using the Rasa framework for the Yoliday Internship Assessment. I was created to help travelers get weather information and packing recommendations for their trips."
+      buttons:
+        - title: "🏠 Back to Main Menu"
+          payload: "/greet"
+        - title: "🤖 What is Rasa?"
+          payload: "/faq_what_is_rasa"
+        - title: "📋 How to plan trips?"
+          payload: "/faq_trip_planning"
+
+  utter_faq_how_to_plan_trip:
+    - text: "✈️ I can help you plan your trip in several ways:\n\n🌤️ **Weather Forecasts** - Get current weather for any destination\n🎒 **Smart Packing** - Recommendations based on weather conditions\n📋 **Complete Planning** - Full trip planning with dates and details\n❓ **24/7 Support** - Ask me anything about travel planning!"
+      buttons:
+        - title: "🌤️ Check Weather Now"
+          payload: "/ask_weather"
+        - title: "🎒 Get Packing Tips"
+          payload: "/recommend_packing"
+        - title: "📋 Start Full Planning"
+          payload: "/start_travel_planning"
+        - title: "🏠 Main Menu"
+          payload: "/greet"
+
+  utter_default_fallback:
+    - text: "🤔 I didn't quite understand that. I'm specialized in travel assistance. Here's what I can help you with:"
+      buttons:
+        - title: "🌤️ Weather Information"
+          payload: "/ask_weather"
+        - title: "🎒 Packing Suggestions"
+          payload: "/recommend_packing"
+        - title: "📋 Complete Trip Planning"
+          payload: "/start_travel_planning"
+        - title: "❓ FAQ & Help"
+          payload: "/faq_trip_planning"
+
+  utter_submit:
+    - text: "Perfect! Let me get the weather information and packing suggestions for your trip to {destination_city}. 🔍"
+
+  utter_after_weather:
+    - text: "What would you like to do next? 🤔"
+      buttons:
+        - title: "🎒 Get Packing Tips"
+          payload: "/recommend_packing"
+        - title: "📋 Plan Complete Trip"  
+          payload: "/start_travel_planning"
+        - title: "🌤️ Check Another City"
+          payload: "/ask_weather"
+        - title: "🏠 Main Menu"
+          payload: "/greet"
+
+  utter_after_packing:
+    - text: "Hope that helps with your packing! What's next? 🌟"
+      buttons:
+        - title: "🌤️ Check Weather"
+          payload: "/ask_weather"
+        - title: "📋 Plan Complete Trip"
+          payload: "/start_travel_planning"  
+        - title: "🎒 Pack for Another City"
+          payload: "/recommend_packing"
+        - title: "🏠 Main Menu"
+          payload: "/greet"
+
+  # CORRECTED a bug where {destination_city} might not be set
+  utter_weather_options:
+    - text: "I can provide weather information. Which city are you interested in?"
+    
+  # CORRECTED a bug where {destination_city} might not be set
+  utter_packing_options:
+    - text: "I can help with packing suggestions. What is your destination?"
+
+actions:
+  - action_get_weather
+  - action_recommend_packing
+  - action_provide_weather_options
+  - action_provide_packing_options
+  - validate_travel_info_form
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true

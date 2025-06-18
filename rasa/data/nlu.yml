@@ -1,0 +1,239 @@
+version: "3.1"
+
+nlu:
+- intent: greet
+  examples: |
+    - hello
+    - hi
+    - hey
+    - good morning
+    - good evening
+    - good afternoon
+    - greetings
+    - hi there
+    - hello there
+    - hey there
+    - howdy
+    - what's up
+    - yo
+    - start
+    - begin
+    - help me
+
+- intent: goodbye
+  examples: |
+    - bye
+    - goodbye
+    - see you later
+    - take care
+    - farewell
+    - bye bye
+    - catch you later
+    - until next time
+    - see you
+    - later
+    - have a good day
+    - talk to you later
+    - exit
+    - quit
+    - end
+
+- intent: ask_weather
+  examples: |
+    - what's the weather like in [New York](location)?
+    - how's the weather in [London](location)?
+    - weather forecast for [Paris](location)
+    - tell me about the weather in [Tokyo](location)
+    - what's the temperature in [Sydney](location)?
+    - is it raining in [Mumbai](location)?
+    - weather update for [Berlin](location)
+    - how hot is it in [Dubai](location)?
+    - what's the climate like in [Singapore](location)?
+    - weather conditions in [Rome](location)
+    - will it be sunny in [Barcelona](location)?
+    - temperature in [Amsterdam](location)
+    - weather report for [Bangkok](location)
+    - what's the weather forecast for [Seattle](location)?
+    - how's the weather looking in [Vancouver](location)?
+    - climate information for [Cairo](location)
+    - weather in [Moscow](location) today
+    - check weather
+    - weather information
+    - I want to check weather for [Delhi](location)
+    - weather for [Mumbai](location)
+    - [Bangalore](location) weather
+    - tell me [Chennai](location) weather
+    - I want to check weather for a different city
+
+- intent: recommend_packing
+  examples: |
+    - what should I pack for [Miami](location)?
+    - packing suggestions for [Iceland](location)
+    - what to bring to [Thailand](location)?
+    - packing list for [Norway](location) in [December](date)
+    - what clothes for [India](location)?
+    - packing recommendations for [Canada](location)
+    - what should I pack for my trip to [Japan](location)?
+    - help me pack for [Australia](location)
+    - clothing suggestions for [Russia](location)
+    - what to wear in [Brazil](location)?
+    - packing advice for [Egypt](location)
+    - what items to pack for [Switzerland](location)?
+    - travel packing for [Kenya](location)
+    - what should I bring to [Chile](location) in [summer](date)?
+    - packing checklist for [Germany](location)
+    - help me pack for [Delhi](location)
+    - packing tips for [Goa](location)
+    - what to pack for [Manali](location)
+    - packing help
+    - packing suggestions
+    - I want packing advice for a different destination
+    - help me pack for my trip to [delhi](location)
+    - help to plan a travel to [delhi](location)
+    - help me plan travel to [mumbai](location)
+    - assist with trip planning for [bangalore](location)
+
+- intent: start_travel_planning
+  examples: |
+    - I want to plan a complete trip
+    - help me plan my trip
+    - start trip planning
+    - plan my travel
+    - I need help planning a trip
+    - complete trip planning
+    - travel planning assistance
+    - help me organize my trip
+    - I want to plan everything
+    - full trip planning
+
+- intent: faq_what_is_rasa
+  examples: |
+    - what is rasa?
+    - tell me about rasa
+    - what is rasa framework?
+    - explain rasa
+    - rasa information
+    - about rasa
+    - rasa details
+
+- intent: faq_who_built_you
+  examples: |
+    - who built you?
+    - who created you?
+    - who made you?
+    - who is your creator?
+    - who developed you?
+    - about you
+    - your creator
+    - who are you
+
+- intent: faq_trip_planning
+  examples: |
+    - how can I plan my trip?
+    - help me plan my journey
+    - trip planning assistance
+    - how do you help with travel?
+    - what can you do?
+    - how does this work?
+    - what services do you provide?
+    - how to plan trips
+    - travel help
+    - trip help
+
+- intent: inform
+  examples: |
+    - [New York](location)
+    - [December 15th](date)
+    - I'm going to [London](location)
+    - my destination is [Paris](location)
+    - traveling to [Tokyo](location)
+    - [January 1st to January 10th](travel_dates)
+    - [March 5th to March 12th](travel_dates)
+    - from [March 5th](date) to [March 12th](date)
+    - [next week](date)
+    - [this weekend](date)
+    - [tomorrow](date)
+    - [December 20th to December 28th](travel_dates)
+    - [June 10th to June 20th](travel_dates)
+    - [February 1st to February 15th](travel_dates)
+    - [Delhi](location)
+    - [Mumbai](location)
+    - [Bangalore](location)
+    - [Chennai](location)
+    - [Kolkata](location)
+    - [Hyderabad](location)
+    - [Pune](location)
+    - [Ahmedabad](location)
+    - [Jaipur](location)
+    - [Lucknow](location)
+    - [this month](date)
+    - [next month](date)
+    - [same day](travel_dates)
+    - [weekend trip](travel_dates)
+    - [one week](travel_dates)
+    - I want to visit a different city
+    - I want to specify exact date
+    - I want to specify exact return date
+
+- intent: recommend_packing
+  examples: |
+    - I want to travel to [abu dhabi](location)
+    - I want to go to [shimla](location)  
+    - planning to visit [dubai](location)
+    - traveling to [delhi](location)
+    - going to [mumbai](location)
+    - trip to [bangalore](location)
+    - I want to travel to [goa](location)
+    - help me plan for [chennai](location)
+    - visiting [kolkata](location)
+    - journey to [hyderabad](location)
+
+- intent: affirm
+  examples: |
+    - yes
+    - yeah
+    - yep
+    - sure
+    - of course
+    - that's right
+    - correct
+    - absolutely
+    - definitely
+    - that sounds good
+    - ok
+    - okay
+    - right
+
+- intent: deny
+  examples: |
+    - no
+    - nope
+    - not really
+    - I don't think so
+    - that's not right
+    - incorrect
+    - no way
+    - definitely not
+    - absolutely not
+    - I disagree
+    - nah
+    - never
+
+- intent: nlu_fallback
+  examples: |
+    - what's your favorite color?
+    - do you like pizza?
+    - tell me a joke
+    - what's the meaning of life?
+    - sing me a song
+    - what's your age?
+    - are you married?
+    - do you have pets?
+    - what's your hobby?
+    - recommend a movie
+    - how are you
+    - random stuff
+    - blah blah
+    - asdfgh
+    - 12345
+
