@@ -1,0 +1,66 @@
+# This is the configuration for your DigitalOcean App
+name: travel-assistant-app
+services:
+  # Rasa Action Server (Internal Service)
+  - name: action-server
+    # Pull the image from Docker Hub
+    image:
+      registry_type: DOCKER_HUB
+      repository: virtuoso633/travel-action-server
+      tag: latest
+    # Command to run inside the container
+    run_command: run actions
+    # The port the action server listens on
+    http_port: 5055
+    # Instance size (can be the cheapest for this)
+    instance_size_slug: basic-xxs
+    instance_count: 1
+
+  # Rasa Server (Public Web Service)
+  - name: rasa-server
+    # Pull the image from Docker Hub
+    image:
+      registry_type: DOCKER_HUB
+      repository: virtuoso633/travel-rasa-server
+      tag: latest
+    # Command to run, using the port DO provides
+    run_command: run --enable-api --cors "*" -p ${PORT} --endpoints endpoints.yml --model /app/models
+    # The port Rasa listens on inside the container
+    http_port: 5005
+    # Instance size
+    instance_size_slug: basic-xxs
+    instance_count: 1
+    # Environment variables
+    envs:
+      - key: ACTION_SERVER_URL
+        # This special variable connects to the internal action-server
+        value: ${action-server.PRIVATE_URL}/webhook
+      - key: RASA_TELEMETRY_ENABLED
+        value: "false"
+    # Public route for the Rasa server
+    routes:
+      - path: /
+
+# Frontend (Static Site)
+static_sites:
+  - name: frontend
+    # Point to your GitHub repository
+    git:
+      repo_url: https://github.com/SanketDevmunde/new_travel_assistant_bot.git # <-- IMPORTANT: Change this to your repo URL
+      branch: main
+    # The directory of your React app
+    source_dir: /rasa/frontend
+    # Build command
+    build_command: npm install && npm run build
+    # Output directory after build
+    output_dir: /build
+    # Environment variables for the build process
+    envs:
+      - key: REACT_APP_RASA_SERVER_URL
+        # This special variable points to the public URL of your rasa-server
+        value: ${rasa-server.PUBLIC_URL}
+    # Routing for a single-page application
+    routes:
+      - path: /
+        # This ensures all routes are handled by index.html
+        catchall: true
