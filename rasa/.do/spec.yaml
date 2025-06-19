@@ -46,7 +46,7 @@ static_sites:
   - name: frontend
     # Point to your GitHub repository
     git:
-      repo_url: https://github.com/SanketDevmunde/new_travel_assistant_bot.git # <-- IMPORTANT: Change this to your repo URL
+      repo_url: https://github.com/Virtuoso633/new_travel_assistant_bot.git # <-- IMPORTANT: Change this to your repo URL
       branch: main
     # The directory of your React app
     source_dir: /rasa/frontend
