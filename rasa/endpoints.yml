@@ -46,7 +46,10 @@ action_endpoint:
   # The URL for the action server container
   # 'action_server' is the service name we will define in docker-compose.yml
   # Port 5055 is the port the action server listens on inside the container network
-  url: "http://action_server:5055/webhook"
+  # url: "http://action_server:5055/webhook"
+
+  # The URL will be injected by Render from the ACTION_SERVER_URL env var
+  url: "${ACTION_SERVER_URL}/webhook"
 
 tracker_store:
   type: InMemoryTrackerStore

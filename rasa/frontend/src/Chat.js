@@ -24,8 +24,10 @@ const Chat = () => {
     setIsLoading(true);
 
     try {
+      // Use environment variable for the server URL, with a fallback for local dev
+      const rasaServerUrl = process.env.REACT_APP_RASA_SERVER_URL || 'http://localhost:5005';
       // Send message to Rasa endpoint
-      const response = await axios.post('http://localhost:5005/webhooks/rest/webhook', {
+      const response = await axios.post(`${rasaServerUrl}/webhooks/rest/webhook`, {
         sender: 'user', // A unique ID for the user
         message: messageText // This is what's sent to Rasa (typed text or payload)
       });

@@ -1,0 +1,15 @@
+# Dockerfile for the main Rasa server
+FROM rasa/rasa:3.6.4
+
+WORKDIR /app
+
+# Copy only what's needed for the Rasa server from the context root
+COPY ./rasa/config.yml ./config.yml
+COPY ./rasa/domain.yml ./domain.yml
+COPY ./rasa/data/ ./data/
+COPY ./rasa/models/ ./models/
+COPY ./rasa/endpoints.yml ./endpoints.yml
+
+USER 1001
+
+# The start command is specified in render.yaml

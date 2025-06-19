@@ -1,0 +1,15 @@
+# Dockerfile for the Rasa Action Server
+FROM rasa/rasa:3.6.4
+
+WORKDIR /app
+
+# Copy requirements and install dependencies
+COPY ./rasa/requirements.txt ./
+USER root
+RUN pip install --no-cache-dir -r requirements.txt
+USER 1001
+
+# Copy actions code
+COPY ./rasa/actions/ ./actions/
+
+# The start command is specified in render.yaml
