@@ -22,14 +22,13 @@ services:
           property: host
       - key: RASA_TELEMETRY_ENABLED
         value: false
-    envVars:
       - key: PORT
         value: 5005
 
   # Frontend (React Static Site)
   - type: web
     name: frontend
-    runtime: static
+    env: static
     buildCommand: "npm install && npm run build"
     rootDir: ./rasa/frontend
     staticPublishPath: ./build
