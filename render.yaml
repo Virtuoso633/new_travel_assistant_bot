@@ -25,17 +25,21 @@ services:
     startCommand: "run --enable-api --cors \"*\" -p $PORT --endpoints endpoints.yml --model /app/models"
 
   # Frontend (React Static Site)
-  - type: static
+  - type: web
     name: frontend
-    rootDir: ./rasa/frontend
     buildCommand: "npm install && npm run build"
-    publishDir: "./build"
+    rootDir: ./rasa/frontend
+    staticPublishPath: ./build
     envVars:
       - key: REACT_APP_RASA_SERVER_URL
         fromService:
           type: web
           name: rasa-server
           property: url
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache
     routes:
       - type: rewrite
         source: /*
