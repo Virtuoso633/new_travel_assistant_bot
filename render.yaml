@@ -1,15 +1,18 @@
 services:
-  # Action Server (Private)
+  # Action Server
   - type: web
     name: action-server
     env: docker
     dockerfilePath: rasa/Dockerfile.actions
     dockerContext: .
     plan: free
-    private: true  # This makes it a private service
+    private: true
     startCommand: "run actions"
+    envVars:
+      - key: PORT
+        value: 5055
 
-  # Rasa Server (Public)
+  # Rasa Server
   - type: web
     name: rasa-server
     env: docker
@@ -19,26 +22,28 @@ services:
     envVars:
       - key: ACTION_SERVER_URL
         fromService:
-          type: web  # Changed from 'pvt' to 'web'
+          type: web
           name: action-server
           property: url
       - key: RASA_TELEMETRY_ENABLED
-        value: false
+        value: "false"
+      - key: PORT
+        value: 5005
     startCommand: "run --enable-api --cors \"*\" -p $PORT --endpoints endpoints.yml --model /app/models"
 
-  # Frontend (React Static Site)
-  - type: static
+  # Frontend as a Web Service (not static)
+  - type: web
     name: frontend
+    env: static
+    buildCommand: npm install && npm run build
+    startCommand: npm install -g serve && serve -s build -l $PORT
+    buildFilter:
+      paths:
+      - rasa/frontend/**
     rootDir: rasa/frontend
-    buildCommand: "npm install && npm run build"
-    publishDir: "./build"
     envVars:
       - key: REACT_APP_RASA_SERVER_URL
         fromService:
           type: web
           name: rasa-server
           property: url
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
