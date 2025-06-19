@@ -12,4 +12,5 @@ USER 1001
 # Copy actions code
 COPY ./rasa/actions/ ./actions/
 
-# The start command is specified in render.yaml
+# Set the default command to run the action server
+CMD ["run", "actions", "--port", "5055"]
