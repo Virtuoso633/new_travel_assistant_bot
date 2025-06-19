@@ -19,14 +19,17 @@ services:
         fromService:
           type: pserv
           name: action-server
-          property: url
+          property: host
       - key: RASA_TELEMETRY_ENABLED
         value: false
-    startCommand: "run --enable-api --cors \"*\" -p $PORT --endpoints endpoints.yml --model /app/models"
+    envVars:
+      - key: PORT
+        value: 5005
 
   # Frontend (React Static Site)
   - type: web
     name: frontend
+    runtime: static
     buildCommand: "npm install && npm run build"
     rootDir: ./rasa/frontend
     staticPublishPath: ./build
@@ -35,8 +38,8 @@ services:
         fromService:
           type: web
           name: rasa-server
-          property: url
-    headers:
+          property: host
+    staticHeaders:
       - path: /*
         name: Cache-Control
         value: no-cache
