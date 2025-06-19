@@ -7,7 +7,6 @@ services:
     dockerContext: .
     plan: free
     private: true
-    startCommand: "run actions"
     envVars:
       - key: PORT
         value: 5055
@@ -21,29 +20,22 @@ services:
     plan: free
     envVars:
       - key: ACTION_SERVER_URL
-        fromService:
-          type: web
-          name: action-server
-          property: url
-      - key: RASA_TELEMETRY_ENABLED
-        value: "false"
+        value: https://action-server:5055
       - key: PORT
         value: 5005
-    startCommand: "run --enable-api --cors \"*\" -p $PORT --endpoints endpoints.yml --model /app/models"
+    startCommand: run --enable-api --cors "*" -p $PORT
 
-  # Frontend as a Web Service (not static)
+  # Frontend
   - type: web
     name: frontend
-    env: static
-    buildCommand: npm install && npm run build
-    startCommand: npm install -g serve && serve -s build -l $PORT
-    buildFilter:
-      paths:
-      - rasa/frontend/**
+    env: node
+    region: oregon
+    plan: free
     rootDir: rasa/frontend
+    buildCommand: npm install && npm run build
+    startCommand: npx serve -s build -l $PORT
     envVars:
+      - key: NODE_VERSION
+        value: 16.0.0
       - key: REACT_APP_RASA_SERVER_URL
-        fromService:
-          type: web
-          name: rasa-server
-          property: url
+        value: https://rasa-server:5005
