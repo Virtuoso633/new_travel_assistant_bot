@@ -1,12 +1,13 @@
 services:
   # Action Server (Private)
-  - type: pvt
+  - type: web
     name: action-server
     env: docker
-    # Note: Dockerfile paths are relative to project root
     dockerfilePath: rasa/Dockerfile.actions
     dockerContext: .
     plan: free
+    private: true  # This makes it a private service
+    startCommand: "run actions"
 
   # Rasa Server (Public)
   - type: web
@@ -18,7 +19,7 @@ services:
     envVars:
       - key: ACTION_SERVER_URL
         fromService:
-          type: pvt
+          type: web  # Changed from 'pvt' to 'web'
           name: action-server
           property: url
       - key: RASA_TELEMETRY_ENABLED
@@ -28,7 +29,6 @@ services:
   # Frontend (React Static Site)
   - type: static
     name: frontend
-    # Update rootDir to point to frontend from project root
     rootDir: rasa/frontend
     buildCommand: "npm install && npm run build"
     publishDir: "./build"
