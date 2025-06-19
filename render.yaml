@@ -1,48 +1,38 @@
 services:
-  # Action Server (Private)
-  - type: pserv
+  # Action Server
+  - type: web
     name: action-server
     env: docker
-    dockerfilePath: ./rasa/Dockerfile.actions
+    dockerfilePath: rasa/Dockerfile.actions
     dockerContext: .
     plan: free
+    private: true
+    envVars:
+      - key: PORT
+        value: 5055
 
-  # Rasa Server (Public)
+  # Rasa Server
   - type: web
     name: rasa-server
     env: docker
-    dockerfilePath: ./rasa/Dockerfile.rasa
+    dockerfilePath: rasa/Dockerfile.rasa
     dockerContext: .
     plan: free
     envVars:
       - key: ACTION_SERVER_URL
-        fromService:
-          type: pserv
-          name: action-server
-          property: host
-      - key: RASA_TELEMETRY_ENABLED
-        value: false
+        value: https://action-server:5055
       - key: PORT
         value: 5005
 
-  # Frontend (React Static Site)
+  # Frontend
   - type: web
     name: frontend
-    env: static
-    buildCommand: "npm install && npm run build"
-    rootDir: ./rasa/frontend
-    staticPublishPath: ./build
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npx serve -s build -l $PORT
+    rootDir: rasa/frontend
     envVars:
+      - key: NODE_VERSION
+        value: 16.0.0
       - key: REACT_APP_RASA_SERVER_URL
-        fromService:
-          type: web
-          name: rasa-server
-          property: host
-    headers:
-      - path: /*
-        name: Cache-Control
-        value: no-cache
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
+        value: https://rasa-server:5005

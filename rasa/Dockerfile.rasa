@@ -13,3 +13,5 @@ COPY ./rasa/endpoints.yml ./endpoints.yml
 USER 1001
 
 # The start command is specified in render.yaml
+
+CMD ["run", "--enable-api", "--cors", "*", "--port", "5005", "--endpoints", "endpoints.yml"]
