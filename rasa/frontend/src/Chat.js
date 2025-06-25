@@ -1,80 +1,75 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import './Chat.css'; // We will create this CSS file next
+import './Chat.css';
 
 const Chat = () => {
-  // State for messages, input, and loading status
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef(null); // Ref to scroll to the bottom
+  const messagesEndRef = useRef(null);
 
-  // Function to automatically scroll to the latest message
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // useEffect hook to scroll whenever messages update
   useEffect(scrollToBottom, [messages]);
 
-  // Function to handle sending messages to Rasa (either typed or from button payload)
   const handleRasaRequest = async (messageText) => {
     if (!messageText) return;
 
     setIsLoading(true);
 
     try {
-      // Use environment variable for the server URL, with a fallback for local dev
       const rasaServerUrl = process.env.REACT_APP_RASA_SERVER_URL || 'http://localhost:5005';
-      // Send message to Rasa endpoint
       const response = await axios.post(`${rasaServerUrl}/webhooks/rest/webhook`, {
-        sender: 'user', // A unique ID for the user
-        message: messageText // This is what's sent to Rasa (typed text or payload)
+        sender: 'user',
+        message: messageText
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        withCredentials: false,
+        timeout: 5000 // 5 second timeout
       });
 
-      // Add bot responses to the UI
-      const newBotMessages = [];
-      response.data.forEach(msg => {
-        if (msg.text) {
-          newBotMessages.push({ text: msg.text, sender: 'bot' });
-        }
-        if (msg.buttons && msg.buttons.length > 0) {
-          // Add a special message type for buttons
-          newBotMessages.push({ type: 'buttons', buttons: msg.buttons, sender: 'bot' });
-        }
-      });
-      setMessages(prev => [...prev, ...newBotMessages]);
-
+      if (response.data && response.data.length > 0) {
+        const newBotMessages = response.data.map(msg => ({
+          text: msg.text,
+          sender: 'bot',
+          buttons: msg.buttons || []
+        }));
+        setMessages(prev => [...prev, ...newBotMessages]);
+      } else {
+        setMessages(prev => [...prev, { 
+          text: "I'm not sure how to respond to that.", 
+          sender: 'bot' 
+        }]);
+      }
     } catch (error) {
       console.error('Error sending message:', error);
-      const errorMessage = { text: 'Sorry, I am having trouble connecting. Please try again later.', sender: 'bot' };
-      setMessages(prev => [...prev, errorMessage]);
+      setMessages(prev => [...prev, { 
+        text: "Sorry, I'm having trouble connecting right now. Please try again later.", 
+        sender: 'bot' 
+      }]);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Function to handle form submission for typed messages
   const handleFormSubmit = (e) => {
     e.preventDefault();
     const message = inputMessage.trim();
     if (!message) return;
 
-    // Add user message to the UI immediately
-    const newUserMessage = { text: message, sender: 'user' };
-    setMessages(prev => [...prev, newUserMessage]);
-    setInputMessage(''); // Clear input after sending
-
+    setMessages(prev => [...prev, { text: message, sender: 'user' }]);
+    setInputMessage('');
     handleRasaRequest(message);
   };
 
-  // Function to handle button clicks
   const handleButtonClick = (title, payload) => {
-    // Add the button's title as a user message for context
-    const userClickedMessage = { text: title, sender: 'user' };
-    setMessages(prev => [...prev, userClickedMessage]);
-    
-    // Send the payload to Rasa
+    setMessages(prev => [...prev, { text: title, sender: 'user' }]);
     handleRasaRequest(payload);
   };
 
@@ -85,10 +80,11 @@ const Chat = () => {
         <span>Online</span>
       </div>
       <div className="chat-messages">
-        {messages.map((msg, index) => {
-          if (msg.type === 'buttons') {
-            return (
-              <div key={index} className={`message bot button-container`}>
+        {messages.map((msg, index) => (
+          <div key={index} className={`message ${msg.sender}`}>
+            {msg.text}
+            {msg.buttons && msg.buttons.length > 0 && (
+              <div className="button-container">
                 {msg.buttons.map((button, btnIndex) => (
                   <button
                     key={btnIndex}
@@ -99,18 +95,15 @@ const Chat = () => {
                   </button>
                 ))}
               </div>
-            );
-          }
-          return (
-            <div key={index} className={`message ${msg.sender}`}>
-              {msg.text}
-            </div>
-          );
-        })}
+            )}
+          </div>
+        ))}
         {isLoading && (
           <div className="message bot">
             <div className="typing-indicator">
-              <span></span><span></span><span></span>
+              <span></span>
+              <span></span>
+              <span></span>
             </div>
           </div>
         )}
@@ -124,7 +117,9 @@ const Chat = () => {
           placeholder="Type a message..."
           disabled={isLoading}
         />
-        <button type="submit" disabled={isLoading}>Send</button>
+        <button type="submit" disabled={isLoading}>
+          Send
+        </button>
       </form>
     </div>
   );

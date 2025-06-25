@@ -1,17 +1,52 @@
-# Dockerfile for the main Rasa server
-FROM rasa/rasa:3.6.4
+# FROM rasa/rasa:3.6.4
+
+# USER root
+# WORKDIR /app
+
+# # Install dependencies and enable debugging
+# RUN pip install --no-cache-dir "sqlalchemy<2.0" debugpy
+# ENV PYTHONUNBUFFERED=1
+# ENV SQLALCHEMY_SILENCE_UBER_WARNING=1
+
+# # Copy files
+# COPY rasa/ ./
+
+# # Verify model integrity (use --nlu flag for validation)
+# #RUN rasa test nlu --model models/model.tar.gz --out results --nlu data/
+
+# USER 1000
+
+# # Debugging-ready command (5005 for API, 5678 for debugger)
+# CMD ["run", "--debug", "-i", "0.0.0.0", "-p", "5005", "--enable-api", "--cors", "*", "--model", "models/model.tar.gz", "--endpoints", "endpoints.yml"]
+
+
+# rasa/Dockerfile.rasa
+# rasa/Dockerfile.rasa
+# Replace the FROM line with this more compatible version
+# Use Python base image instead of Rasa's image
+FROM python:3.8-slim-bullseye
 
 WORKDIR /app
 
-# Copy only what's needed for the Rasa server from the context root
-COPY ./rasa/config.yml ./config.yml
-COPY ./rasa/domain.yml ./domain.yml
-COPY ./rasa/data/ ./data/
-COPY ./rasa/models/ ./models/
-COPY ./rasa/endpoints.yml ./endpoints.yml
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
-USER 1001
+RUN pip install --upgrade pip && \
+    pip install rasa==3.6.4 "sqlalchemy<2.0"
 
-# The start command is specified in render.yaml
+COPY config.yml .
+COPY domain.yml . 
+COPY endpoints.yml .
+COPY data/ ./data/
+COPY models/ ./models/
 
-CMD ["run", "--enable-api", "--cors", "*", "--port", "5005", "--endpoints", "endpoints.yml"]
+RUN useradd -m -u 1000 rasa && \
+    chown -R rasa:rasa /app
+
+USER rasa
+EXPOSE 5005
+
+CMD ["python", "-m", "rasa", "run", "--debug", "--host", "0.0.0.0", "--port", "5005", "--enable-api", "--cors", "*", "--model", "models/", "--endpoints", "endpoints.yml"]

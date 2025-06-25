@@ -1,12 +1,13 @@
 """
 Custom Actions for Travel Assistant Bot - Yoliday Internship Assessment
-This file contains custom actions using Open-Meteo free weather API with enhanced user guidance.
+Enhanced with proper error handling, HEAD support, and robust slot management
 Author: Travel Assistant Bot Developer
 """
 
 import requests
 import logging
 import ast
+import json
 from typing import Any, Text, Dict, List
 
 from rasa_sdk import Action, Tracker, FormValidationAction
@@ -16,6 +17,9 @@ from rasa_sdk.types import DomainDict
 
 # Set up logging
 logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+
+# --- Removed Sanic app creation and health endpoint ---
 
 class ActionGetWeather(Action):
     """Custom action to fetch weather information from Open-Meteo free API"""
@@ -27,30 +31,26 @@ class ActionGetWeather(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         
-        city = next((e["value"] for e in tracker.latest_message.get("entities", [])
-                    if e["entity"] == "location"), None)
+        # Log current tracker state for debugging
+        logger.debug(f"Tracker state: {json.dumps(tracker.current_state(), indent=2)}")
         
-        if city:
-            logger.info(f"Found city '{city}' from new entity.")
+        # Extract city from entities or slot
+        city = next(
+            (e["value"] for e in tracker.latest_message.get("entities", [])
+            if e["entity"] == "location"
+        ), None) or tracker.get_slot("destination_city")
         
-        
-        # 2. If no new entity was found, fall back to the slot value
-        if not city:
-            city = tracker.get_slot("destination_city")
-            if city:
-                logger.info(f"Using city '{city}' from existing slot.")
-        
-        # 3. If no city is found in either, provide guidance
+        # If no city found, prompt user
         if not city:
             dispatcher.utter_message(text="🏙️ I'd love to help you check the weather! Please specify which city you're interested in.")
             dispatcher.utter_message(response="utter_weather_options")
-            return []
+            return [SlotSet("destination_city", None), SlotSet("weather_info", None)]
         
-        ### IMPORTANT: Update the slot with the correct city ###
+        logger.info(f"Fetching weather for: {city}")
         events_to_return = [SlotSet("destination_city", city)]
         
         try:
-            # Get coordinates for the city using Open-Meteo's geocoding
+            # Get coordinates for the city
             geo_url = "https://geocoding-api.open-meteo.com/v1/search"
             geo_params = {"name": city, "count": 1, "language": "en", "format": "json"}
             
@@ -61,7 +61,7 @@ class ActionGetWeather(Action):
             if not geo_data.get("results"):
                 dispatcher.utter_message(text=f"🔍 Sorry, I couldn't find weather data for '{city.title()}'. Please check the spelling or try a different city name.")
                 dispatcher.utter_message(response="utter_weather_options")
-                return [SlotSet("destination_city", None)]
+                return [SlotSet("destination_city", None), SlotSet("weather_info", None)]
             
             # Get coordinates and location details
             location = geo_data["results"][0]
@@ -70,7 +70,7 @@ class ActionGetWeather(Action):
             city_name = location["name"]
             country = location.get("country", "")
             
-            # Get weather data from Open-Meteo
+            # Get weather data
             weather_url = "https://api.open-meteo.com/v1/forecast"
             weather_params = {
                 "latitude": latitude,
@@ -91,7 +91,7 @@ class ActionGetWeather(Action):
             weather_code = current["weather_code"]
             weather_description = self._get_weather_description(weather_code)
             
-            # Format weather report with enhanced presentation
+            # Format weather report
             location_display = f"{city_name}, {country}" if country else city_name
             weather_report = f"""
 🌤️ **Current Weather for {location_display}**
@@ -122,15 +122,13 @@ class ActionGetWeather(Action):
             return events_to_return
             
         except requests.exceptions.RequestException as e:
-            logger.error(f"API request failed: {e}")
-            dispatcher.utter_message(text=f"🌐 Sorry, I'm having trouble connecting to the weather service right now. Please try again in a moment.")
-            dispatcher.utter_message(response="utter_weather_options")
+            logger.error(f"Weather API request failed: {e}")
+            dispatcher.utter_message(text=f"🌐 Sorry, I'm having trouble connecting to the weather service right now. Please try again later.")
             return events_to_return
         
         except Exception as e:
-            logger.error(f"An unexpected error occurred in ActionGetWeather: {e}")
-            dispatcher.utter_message(text="⚠️ An unexpected error occurred while fetching weather data. Please try again.")
-            dispatcher.utter_message(response="utter_weather_options")
+            logger.exception(f"Unexpected error in ActionGetWeather: {e}")
+            dispatcher.utter_message(text="⚠️ An unexpected error occurred while fetching weather data.")
             return events_to_return
     
     def _get_weather_description(self, code: int) -> str:
@@ -145,7 +143,7 @@ class ActionGetWeather(Action):
         return weather_codes.get(code, "Unknown conditions")
 
 class ActionRecommendPacking(Action):
-    """Custom action to provide intelligent packing recommendations based on weather conditions"""
+    """Custom action to provide intelligent packing recommendations"""
     
     def name(self) -> Text:
         return "action_recommend_packing"
@@ -154,39 +152,27 @@ class ActionRecommendPacking(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         
-        ### CORRECTED LOGIC TO PRIORITIZE NEW ENTITIES ###
-        city = None
+        # Get city from slot or entities
+        city = tracker.get_slot("destination_city") or next(
+            (e["value"] for e in tracker.latest_message.get("entities", [])
+            if e["entity"] == "location"), None
+        )
         
-        # 1. First, try to get the city from the latest user message's entities
-        entities = tracker.latest_message.get("entities", [])
-        for entity in entities:
-            if entity.get("entity") == "location":
-                city = entity.get("value")
-                logger.info(f"Found city '{city}' from new entity for packing.")
-                break
-        
-        # 2. If no new entity was found, fall back to the slot value
-        if not city:
-            city = tracker.get_slot("destination_city")
-            if city:
-                logger.info(f"Using city '{city}' from existing slot for packing.")
-
-        # 3. If no city is found, provide guidance
         if not city:
             dispatcher.utter_message(text="🎒 I'd love to help you pack smart! Which destination do you need packing advice for?")
             dispatcher.utter_message(response="utter_packing_options")
-            return []
+            return [SlotSet("destination_city", None)]
             
-        # Get current weather info for this city if available
+        # Get current weather info
         weather_info_str = tracker.get_slot("weather_info")
         
-        # If we don't have weather info for this city, fetch it first
-        if not weather_info_str:
-            # Try to get weather data first
+        # If no weather data, try to fetch it
+        if not weather_info_str or weather_info_str == "None":
+            logger.info(f"No weather data found for {city}, fetching now...")
             weather_action = ActionGetWeather()
             weather_events = weather_action.run(dispatcher, tracker, domain)
             
-            # Get updated weather info after fetching
+            # Update weather info from events
             for event in weather_events:
                 if isinstance(event, SlotSet) and event.key == "weather_info":
                     weather_info_str = event.value
@@ -205,13 +191,31 @@ class ActionRecommendPacking(Action):
         ]
     
     def _generate_packing_recommendations(self, weather_info_str: str, city: str) -> str:
-        """Generate intelligent packing recommendations based on weather conditions"""
+        """Generate packing recommendations with weather context"""
         
+        # Initialize with default recommendations
         recommendations = {
-            "essentials": [],
-            "clothing": [],
-            "accessories": [],
-            "weather_specific": []
+            "essentials": [
+                "Valid ID/passport and travel documents",
+                "Phone charger and portable power bank",
+                "Basic first aid kit with personal medications",
+                "Comfortable walking shoes",
+                "Travel insurance documents",
+                "Emergency contact information"
+            ],
+            "clothing": [
+                "Versatile layers (t-shirts, light sweater, jacket)",
+                "Comfortable pants and shorts",
+                "Versatile footwear for walking"
+            ],
+            "accessories": [
+                "Universal travel adapter",
+                "Reusable water bottle",
+                "Day backpack or travel bag"
+            ],
+            "weather_specific": [
+                "Check weather for specific recommendations"
+            ]
         }
         
         temperature = None
@@ -223,120 +227,83 @@ class ActionRecommendPacking(Action):
                 weather_dict = ast.literal_eval(weather_info_str)
                 temperature = weather_dict.get("temperature")
                 weather_desc = weather_dict.get("description", "").lower()
-            except (ValueError, SyntaxError) as e:
-                logger.error(f"Could not parse weather_info slot: {weather_info_str}. Error: {e}")
-                pass
+                logger.info(f"Using weather data: temp={temperature}, desc={weather_desc}")
+            except Exception as e:
+                logger.error(f"Could not parse weather_info: {e}")
         
-        # Temperature-based recommendations with Indian context
+        # Temperature-based recommendations
         if temperature is not None:
             if temperature < 5:
-                recommendations["clothing"].extend([
+                recommendations["clothing"] = [
                     "Heavy winter jacket or down coat",
                     "Thermal underwear and warm layers",
                     "Woolen sweaters and fleece",
-                    "Insulated winter boots",
+                    "Insulated winter boots"
+                ]
+                recommendations["weather_specific"] = [
                     "Warm gloves, scarf, and beanie",
-                    "Thick wool socks"
-                ])
-                recommendations["weather_specific"].extend([
-                    "Hand and foot warmers",
-                    "Lip balm for cold weather",
-                    "Moisturizing cream for dry skin"
-                ])
+                    "Thick wool socks",
+                    "Hand and foot warmers"
+                ]
                 
             elif 5 <= temperature < 15:
-                recommendations["clothing"].extend([
+                recommendations["clothing"] = [
                     "Warm jacket or windcheater",
                     "Long-sleeve shirts and sweaters",
                     "Jeans or warm pants",
-                    "Closed-toe shoes or boots",
-                    "Light jacket for layering"
-                ])
+                    "Closed-toe shoes or boots"
+                ]
                 
             elif 15 <= temperature < 25:
-                recommendations["clothing"].extend([
+                recommendations["clothing"] = [
                     "Light cardigan or thin jacket",
                     "Mix of cotton t-shirts and long sleeves",
                     "Comfortable jeans or cotton pants",
-                    "Sneakers or comfortable walking shoes",
-                    "Light sweater for evenings"
-                ])
+                    "Sneakers or comfortable walking shoes"
+                ]
                 
             elif 25 <= temperature < 35:
-                recommendations["clothing"].extend([
+                recommendations["clothing"] = [
                     "Cotton t-shirts and breathable fabrics",
                     "Shorts, cotton pants, or light dresses",
                     "Comfortable sandals or breathable shoes",
-                    "Light cotton shirts for sun protection",
-                    "Thin cardigan for air-conditioned places"
-                ])
+                    "Light cotton shirts for sun protection"
+                ]
                 
             else:  # temperature >= 35 (hot weather)
-                recommendations["clothing"].extend([
+                recommendations["clothing"] = [
                     "Lightweight cotton or linen clothing",
                     "Loose-fitting shirts and breathable fabrics",
                     "Cotton shorts and comfortable sandals",
-                    "Wide-brimmed hat or cap",
-                    "Light-colored clothing to reflect heat"
-                ])
-                recommendations["weather_specific"].extend([
+                    "Wide-brimmed hat or cap"
+                ]
+                recommendations["weather_specific"] = [
                     "High SPF sunscreen (30+ recommended)",
                     "Cooling towel or neck wrap",
-                    "Extra water bottle and electrolyte drinks",
-                    "Portable fan or cooling spray"
-                ])
-        else:
-            # Default recommendations when no weather data available
-            recommendations["clothing"].extend([
-                "Versatile layers (t-shirts, light sweater, jacket)",
-                "Comfortable pants and shorts",
-                "Versatile footwear for walking"
-            ])
+                    "Extra water bottle"
+                ]
         
-        # Weather condition-specific recommendations
+        # Weather condition-specific additions
         if "rain" in weather_desc or "drizzle" in weather_desc:
             recommendations["weather_specific"].extend([
                 "Waterproof rain jacket or poncho",
                 "Compact umbrella",
-                "Waterproof shoes or boots",
-                "Quick-dry clothing and plastic bags for electronics"
+                "Waterproof shoes or boots"
             ])
             
         elif "snow" in weather_desc:
             recommendations["weather_specific"].extend([
                 "Waterproof snow boots with good grip",
                 "Insulated gloves and warm socks",
-                "Waterproof outer layer",
-                "Warm scarf and thermal wear"
+                "Waterproof outer layer"
             ])
             
         elif "sun" in weather_desc or "clear" in weather_desc:
             recommendations["weather_specific"].extend([
                 "UV protection sunglasses",
                 "Broad-spectrum sunscreen",
-                "Sun hat or cap with UV protection",
-                "Light, long-sleeved shirt for sun protection"
+                "Sun hat or cap with UV protection"
             ])
-        
-        # Essential travel items
-        recommendations["essentials"] = [
-            "Valid ID/passport and travel documents",
-            "Phone charger and portable power bank",
-            "Basic first aid kit with personal medications",
-            "Comfortable walking shoes",
-            "Travel insurance documents",
-            "Emergency contact information"
-        ]
-        
-        # Travel accessories
-        recommendations["accessories"] = [
-            "Universal travel adapter (for international trips)",
-            "Reusable water bottle",
-            "Day backpack or travel bag",
-            "Travel pillow for long journeys",
-            "Entertainment (books, downloaded content)",
-            "Camera or smartphone for memories"
-        ]
         
         # Format the comprehensive packing message
         packing_message = f"🧳 **Smart Packing Recommendations for {city.title()}**\n\n"
@@ -346,24 +313,22 @@ class ActionRecommendPacking(Action):
         else:
             packing_message += "*General recommendations (check weather for more specific advice)*\n\n"
         
-        # Add each category with emojis and formatting
-        category_emojis = {
-            "essentials": "🎯",
-            "clothing": "👕", 
-            "accessories": "🔧",
-            "weather_specific": "🌤️"
+        # Add each category
+        category_titles = {
+            "essentials": "🎯 Essentials",
+            "clothing": "👕 Clothing", 
+            "accessories": "🔧 Accessories",
+            "weather_specific": "🌤️ Weather Specific"
         }
         
         for category, items in recommendations.items():
             if items:
-                category_title = category.replace("_", " ").title()
-                emoji = category_emojis.get(category, "📋")
-                packing_message += f"**{emoji} {category_title}:**\n"
+                packing_message += f"**{category_titles.get(category, category.title())}:**\n"
                 for item in items:
                     packing_message += f"• {item}\n"
                 packing_message += "\n"
         
-        packing_message += "*💡 Pro Tip: Pack light and check airline baggage policies. Safe travels!*"
+        packing_message += "*💡 Pro Tip: Pack light and check airline baggage policies!*"
         
         return packing_message
 
@@ -380,7 +345,7 @@ class ActionProvideWeatherOptions(Action):
         dispatcher.utter_message(response="utter_weather_options")
         return []
 
-class ActionProvidePagingOptions(Action):
+class ActionProvidePackingOptions(Action):
     """Provide packing options to guide users"""
     
     def name(self) -> Text:
@@ -394,7 +359,7 @@ class ActionProvidePagingOptions(Action):
         return []
 
 class ValidateTravelInfoForm(FormValidationAction):
-    """Custom form validation for travel information with enhanced user guidance"""
+    """Custom form validation for travel information"""
     
     def name(self) -> Text:
         return "validate_travel_info_form"
@@ -406,7 +371,7 @@ class ValidateTravelInfoForm(FormValidationAction):
         tracker: Tracker,
         domain: DomainDict,
     ) -> Dict[Text, Any]:
-        """Validate destination city input with helpful guidance"""
+        """Validate destination city input"""
         
         if not slot_value:
             dispatcher.utter_message(text="🏙️ Please provide a valid city name for your destination.")
@@ -418,10 +383,7 @@ class ValidateTravelInfoForm(FormValidationAction):
             dispatcher.utter_message(text="🔍 Please provide a city name with at least 2 characters.")
             return {"destination_city": None}
         
-        # Clean up and format the city name
-        city_name = city_name.title()
-        
-        return {"destination_city": city_name}
+        return {"destination_city": city_name.title()}
     
     def validate_start_date(
         self,
@@ -430,10 +392,10 @@ class ValidateTravelInfoForm(FormValidationAction):
         tracker: Tracker,
         domain: DomainDict,
     ) -> Dict[Text, Any]:
-        """Validate start date input with helpful guidance"""
+        """Validate start date input"""
         
         if not slot_value:
-            dispatcher.utter_message(text="📅 Please provide your travel start date (e.g., 'next week', 'December 15th', or '2024-12-15').")
+            dispatcher.utter_message(text="📅 Please provide your travel start date (e.g., 'next week', 'December 15th').")
             return {"start_date": None}
         
         date_str = str(slot_value).strip()
@@ -451,16 +413,16 @@ class ValidateTravelInfoForm(FormValidationAction):
         tracker: Tracker,
         domain: DomainDict,
     ) -> Dict[Text, Any]:
-        """Validate end date input with helpful guidance"""
+        """Validate end date input"""
         
         if not slot_value:
-            dispatcher.utter_message(text="🔙 Please provide your return date or trip duration (e.g., 'same day', 'one week', 'December 20th').")
+            dispatcher.utter_message(text="🔙 Please provide your return date or trip duration.")
             return {"end_date": None}
         
         date_str = str(slot_value).strip()
         
         if len(date_str) < 3:
-            dispatcher.utter_message(text="🔙 Please provide more details about your return date or trip duration.")
+            dispatcher.utter_message(text="🔙 Please provide more details about your return date.")
             return {"end_date": None}
         
         return {"end_date": date_str}

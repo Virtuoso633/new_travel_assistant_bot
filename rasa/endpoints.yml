@@ -49,7 +49,7 @@ action_endpoint:
   # url: "http://action_server:5055/webhook"
 
   # The URL will be injected by Render from the ACTION_SERVER_URL env var
-  url: "${ACTION_SERVER_URL}/webhook"
+  url: "http://action-server:5055/webhook"
 
 tracker_store:
   type: InMemoryTrackerStore

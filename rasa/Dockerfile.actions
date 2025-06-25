@@ -1,16 +1,48 @@
-# Dockerfile for the Rasa Action Server
-FROM rasa/rasa:3.6.4
+# FROM rasa/rasa-sdk:3.6.1
+
+# WORKDIR /app
+
+# COPY rasa/requirements.txt .
+# USER root
+# RUN pip install --no-cache-dir -r requirements.txt
+
+# COPY rasa/actions/ actions/
+
+# USER 1001
+# EXPOSE 5055
+
+# CMD ["start", "--actions", "actions", "--port", "5055"]
+
+
+
+# rasa/Dockerfile.actions
+FROM python:3.8-slim-bullseye
+
+# Install system dependencies first
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    gcc \
+    python3-dev \
+    libhdf5-dev \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Copy requirements and install dependencies
-COPY ./rasa/requirements.txt ./
-USER root
-RUN pip install --no-cache-dir -r requirements.txt
+# Install Rasa SDK and dependencies
+RUN pip install --upgrade pip && \
+    pip install rasa-sdk==3.6.1 "sqlalchemy<2.0"
+
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install -r requirements.txt
+
+COPY actions/ ./actions/
+
+# Create non-root user and set permissions
+RUN useradd -m -u 1001 rasa && \
+    chown -R rasa:rasa /app
 USER 1001
 
-# Copy actions code
-COPY ./rasa/actions/ ./actions/
-
-# Set the default command to run the action server
-CMD ["run", "actions", "--port", "5055"]
+CMD ["rasa", "run", "actions", "--port", "5055"]

@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  rasa-server:
+    image: khalosa/rasa-aarch64:3.5.2
+    container_name: rasa-server
+    command: >
+      run --enable-api --cors "*" --port 5005
+      --endpoints /app/endpoints.yml
+      --model /app/models/model.tar.gz
+    ports:
+      - "5005:5005"
+    volumes:
+      - ./rasa:/app
+    depends_on:
+      - action-server
+    networks:
+      - rasa-network
+
+  action-server:
+    image: virtuoso633/travel-action-server:arm64
+    container_name: action-server
+    command: >
+      rasa run actions --actions actions --port 5055
+    ports:
+      - "5055:5055"
+    volumes:
+      - ./rasa/actions:/app/actions
+      - ./rasa/requirements.txt:/app/requirements.txt
+    networks:
+      - rasa-network
+
+  travel-frontend:
+    image: virtuoso633/travel-frontend:latest
+    container_name: travel-frontend
+    ports:
+      - "80:80"
+    networks:
+      - rasa-network
+
+networks:
+  rasa-network:
+    driver: bridge

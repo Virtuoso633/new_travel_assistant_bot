@@ -1,0 +1,22 @@
+# Use official Node image for build step
+FROM node:18 AS build
+
+WORKDIR /app
+
+COPY package.json package-lock.json* yarn.lock* ./
+RUN npm install
+
+COPY . .
+RUN npm run build
+
+# Use Nginx to serve the static files
+FROM nginx:alpine
+
+# Copy built files from previous stage
+COPY --from=build /app/build /usr/share/nginx/html
+
+# Expose port 80
+EXPOSE 80
+
+# Start Nginx server
+CMD ["nginx", "-g", "daemon off;"]

@@ -1,23 +1,19 @@
 services:
-  # Rasa Action Server (Private Service)
+  # Action Server (Private)
   - type: pvt
     name: action-server
     env: docker
-    # Assumes Dockerfile.actions is in the 'rasa' directory
     dockerfilePath: ./rasa/Dockerfile.actions
     dockerContext: .
     plan: free
 
-  # Rasa Server (Public Web Service)
+  # Rasa Server (Public)
   - type: web
     name: rasa-server
     env: docker
-    # Assumes Dockerfile.rasa is in the 'rasa' directory
     dockerfilePath: ./rasa/Dockerfile.rasa
     dockerContext: .
     plan: free
-    healthCheck:
-      path: /
     envVars:
       - key: ACTION_SERVER_URL
         fromService:
@@ -26,18 +22,15 @@ services:
           property: url
       - key: RASA_TELEMETRY_ENABLED
         value: false
-    # This command runs the Rasa server and connects to the action server
-    startCommand: "rasa run --enable-api --cors \"*\" -p $PORT --endpoints endpoints.yml --models models"
+    startCommand: "run --enable-api --cors \"*\" -p $PORT --endpoints endpoints.yml --model /app/models"
 
-  # Frontend (React App as a Static Site)
+  # Frontend (React Static Site)
   - type: static
     name: frontend
-    # Specifies the root directory of the frontend app
     rootDir: ./rasa/frontend
     buildCommand: "npm install && npm run build"
     publishDir: "./build"
     envVars:
-      # Passes the Rasa server URL to the React app at build time
       - key: REACT_APP_RASA_SERVER_URL
         fromService:
           type: web
