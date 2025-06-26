@@ -131,7 +131,6 @@ docker compose down
 
 ## Credits
 
-- Built for Yoliday Internship Assessment
 - Uses [Rasa](https://rasa.com/) and [Open-Meteo](https://open-meteo.com/) APIs
 
 ---
