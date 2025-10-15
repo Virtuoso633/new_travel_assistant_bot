@@ -1,239 +1,1023 @@
+# -------------------------
+# data/nlu.yml (Corrected & Robust)
+# -------------------------
 version: "3.1"
 
 nlu:
+- lookup: location
+  examples: |
+    - New Delhi
+    - Mumbai
+    - London
+    - Paris
+    - Abu Dhabi
+    - Dubai
+    - Tokyo
+    - Sydney
+    - New York
+    - Los Angeles
+    - Chicago
+    - San Francisco
+    - Las Vegas
+    - Miami
+    - Orlando
+    - Washington D.C.
+    - Boston
+    - Seattle
+    - Toronto
+    - Vancouver
+    - Montreal
+    - Quebec City
+    - Mexico City
+    - Cancun
+    - Rio de Janeiro
+    - Sao Paulo
+    - Buenos Aires
+    - Lima
+    - Santiago
+    - Bogota
+    - Madrid
+    - Barcelona
+    - Rome
+    - Venice
+    - Florence
+    - Milan
+    - Naples
+    - Berlin
+    - Munich
+    - Frankfurt
+    - Hamburg
+    - Amsterdam
+    - Brussels
+    - Zurich
+    - Geneva
+    - Vienna
+    - Prague
+    - Budapest
+    - Warsaw
+    - Copenhagen
+    - Stockholm
+    - Oslo
+    - Helsinki
+    - Athens
+    - Istanbul
+    - Ankara
+    - Cairo
+    - Giza
+    - Luxor
+    - Marrakech
+    - Casablanca
+    - Cape Town
+    - Johannesburg
+    - Nairobi
+    - Lagos
+    - Accra
+    - Moscow
+    - St. Petersburg
+    - Beijing
+    - Shanghai
+    - Hong Kong
+    - Taipei
+    - Seoul
+    - Singapore
+    - Kuala Lumpur
+    - Bangkok
+    - Phuket
+    - Hanoi
+    - Ho Chi Minh City
+    - Manila
+    - Jakarta
+    - Bali
+    - Riyadh
+    - Jeddah
+    - Doha
+    - Kuwait City
+    - Muscat
+    - Amman
+    - Jerusalem
+    - Tel Aviv
+    - Beirut
+    - Damascus
+    - Baghdad
+    - Tehran
+    - Karachi
+    - Lahore
+    - Islamabad
+    - Dhaka
+    - Kathmandu
+    - Colombo
+    - Male
+    - Thimphu
+    - Canberra
+    - Melbourne
+    - Perth
+    - Brisbane
+    - Adelaide
+    - Auckland
+    - Wellington
+    - Christchurch
+    - Queenstown
+    - Suva
+    - Nadi
+    - Papeete
+    - Bora Bora
+    - Honolulu
+    - Maui
+    - Dublin
+    - Edinburgh
+    - Glasgow
+    - Manchester
+    - Liverpool
+    - Birmingham
+    - Lisbon
+    - Porto
+    - Reykjavik
+    - Kyiv
+    - Minsk
+    - Bucharest
+    - Sofia
+    - Belgrade
+    - Zagreb
+    - Ljubljana
+    - Sarajevo
+    - Skopje
+    - Tirana
+    - Podgorica
+    - Monaco
+    - San Marino
+    - Vatican City
+    - Andorra la Vella
+    - Luxembourg City
+    - Vaduz
+    - Bern
+    - Bratislava
+    - Vilnius
+    - Riga
+    - Tallinn
+    - Valletta
+    - Nicosia
+    - Tunis
+    - Algiers
+    - Tripoli
+    - Rabat
+    - Dakar
+    - Abuja
+    - Kinshasa
+    - Addis Ababa
+    - Dar es Salaam
+    - Harare
+    - Luanda
+    - Maputo
+    - Windhoek
+    - Gaborone
+    - Lusaka
+    - Antananarivo
+    - Port Louis
+    - Victoria
+    - Pretoria
+    - Bloemfontein
+    - Durban
+    - Port Elizabeth
+    - Alexandria
+    - Aswan
+    - Sharm El Sheikh
+    - Hurghada
+    - Petra
+    - Aqaba
+    - Manama
+    - Sharjah
+    - Mecca
+    - Medina
+    - Dammam
+    - Al Khobar
+    - Abha
+    - Taif
+    - Tabuk
+    - Yanbu
+    - Jubail
+    - Hofuf
+    - Buraidah
+    - Khamis Mushait
+    - Najran
+    - Jizan
+    - Sakaka
+    - Arar
+    - Hail
+    - Al Bahah
+    - Ras Tanura
+    - Qatif
+    - Dhahran
+    - Al-Hasa
+    - Riyadh Al-Khabra
+    - Unaizah
+    - Al-Ras
+    - Al-Bukayriyah
+    - Al-Badai
+    - Al-Asyah
+    - An-Nabhaniyah
+    - Uyun Al-Jiwa
+    - Riyadh Al-Zallaq
+    - Al-Shamasiyah
+    - Al-Mithnab
+    - Al-Qassim
+    - Al-Zulfi
+    - Al-Ghat
+    - Al-Majmaah
+    - Shaqra
+    - Thadiq
+    - Huraymila
+    - Al-Hareeq
+    - Al-Aflaj
+    - Al-Kharj
+    - Diriyah
+    - Durma
+    - Al-Muzahmiyah
+    - Afif
+    - Dawadmi
+    - Al-Quwayiyah
+    - As-Sulayyil
+    - Wadi ad-Dawasir
+    - Bishah
+    - Tathleeth
+    - Sarat Abidah
+    - Ahad Rafidah
+    - Dhahran Al-Janub
+    - Al-Namas
+    - Balqarn
+    - Majardah
+    - Bariq
+    - Muhayil
+    - Rijal Almaa
+    - Al-Qunfudhah
+    - Al-Lith
+    - Adham
+    - Al-Kamil
+    - Khulays
+    - Rabigh
+    - Makkah
+    - Al-Jumum
+    - Bahrah
+    - Al-Qurayyat
+    - Turaif
+    - Rafha
+    - Al-Ula
+    - Al-Wajh
+    - Duba
+    - Tayma
+    - Haqil
+    - Umluj
+    - Al-Bada
+    - Al-Madinah
+    - Mahd Al-Dhahab
+    - Khaybar
+    - Badr
+    - Al-Hinakiyah
+    - Asir
+    - Northern Borders
+    - Eastern Province
+    - Madinah
+    - Calgary
+    - Edmonton
+    - Ottawa
+    - Winnipeg
+    - Hamilton
+    - Kitchener
+    - Victoria
+    - Halifax
+    - Oshawa
+    - Windsor
+    - Saskatoon
+    - Regina
+    - St. John's
+    - Barrie
+    - Kelowna
+    - Abbotsford
+    - Sherbrooke
+    - Trois-Rivières
+    - Guelph
+    - Moncton
+    - Brantford
+    - Saint John
+    - Peterborough
+    - Thunder Bay
+    - Nanaimo
+    - Kamloops
+    - Fredericton
+    - Chilliwack
+    - Red Deer
+    - Lethbridge
+    - Grande Prairie
+    - Medicine Hat
+    - Prince George
+    - Sault Ste. Marie
+    - Kawartha Lakes
+    - North Bay
+    - Cornwall
+    - Charlottetown
+    - Wood Buffalo
+    - Kingston
+    - Sudbury
+    - Chatham-Kent
+    - Cape Breton
+    - Leamington
+    - Saint-Hyacinthe
+    - Drummondville
+    - Granby
+    - Shawinigan
+    - Saint-Jérôme
+    - Belleville
+    - Sarnia
+    - Brockville
+    - Penticton
+    - Vernon
+    - Courtenay
+    - Campbell River
+    - Duncan
+    - Port Alberni
+    - Mission
+    - Maple Ridge
+    - New Westminster
+    - Port Coquitlam
+    - Coquitlam
+    - Burnaby
+    - Richmond
+    - Surrey
+    - Delta
+    - Langley
+    - White Rock
+    - Anmore
+    - Belcarra
+    - Lions Bay
+    - Bowen Island
+    - Gibsons
+    - Sechelt
+    - Powell River
+    - Squamish
+    - Whistler
+    - Pemberton
+    - Lillooet
+    - Cache Creek
+    - Ashcroft
+    - Logan Lake
+    - Merritt
+    - Princeton
+    - Keremeos
+    - Oliver
+    - Osoyoos
+    - Grand Forks
+    - Trail
+    - Rossland
+    - Castlegar
+    - Nelson
+    - Salmo
+    - Creston
+    - Kimberley
+    - Cranbrook
+    - Fernie
+    - Sparwood
+    - Elkford
+    - Invermere
+    - Radium Hot Springs
+    - Golden
+    - Revelstoke
+    - Sicamous
+    - Salmon Arm
+    - Armstrong
+    - Enderby
+    - Lumby
+    - Coldstream
+    - Lake Country
+    - Peachland
+    - Summerland
+    - West Kelowna
+    - Nakusp
+    - New Denver
+    - Silverton
+    - Slocan
+    - Kaslo
+    - Warfield
+    - Montrose
+    - Fruitvale
+    - Houston
+    - Telkwa
+    - Smithers
+    - Terrace
+    - Kitimat
+    - Prince Rupert
+    - Port Edward
+    - Stewart
+    - Hazelton
+    - New Hazelton
+    - Masset
+    - Port Clements
+    - Queen Charlotte
+    - Sandspit
+    - Daajing Giids
+    - Skidegate
+    - Fort St. John
+    - Dawson Creek
+    - Chetwynd
+    - Tumbler Ridge
+    - Hudson's Hope
+    - Taylor
+    - Fort Nelson
+    - San Diego
+    - San Jose
+    - Fresno
+    - Sacramento
+    - Long Beach
+    - Oakland
+    - Bakersfield
+    - Anaheim
+    - Santa Ana
+    - Riverside
+    - Stockton
+    - Chula Vista
+    - Irvine
+    - Fremont
+    - San Bernardino
+    - Modesto
+    - Fontana
+    - Oxnard
+    - Moreno Valley
+    - Huntington Beach
+    - Glendale
+    - Santa Clarita
+    - Garden Grove
+    - Oceanside
+    - Rancho Cucamonga
+    - Santa Rosa
+    - Ontario
+    - Elk Grove
+    - Corona
+    - Lancaster
+    - Palmdale
+    - Salinas
+    - Hayward
+    - Pomona
+    - Escondido
+    - Sunnyvale
+    - Torrance
+    - Pasadena
+    - Orange
+    - Fullerton
+    - Thousand Oaks
+    - Visalia
+    - Simi Valley
+    - Concord
+    - Roseville
+    - Victorville
+    - Santa Clara
+    - Vallejo
+    - Berkeley
+    - El Monte
+    - Downey
+    - Costa Mesa
+    - Inglewood
+    - Carlsbad
+    - San Buenaventura (Ventura)
+    - Fairfield
+    - West Covina
+    - Murrieta
+    - Norwalk
+    - Antioch
+    - Temecula
+    - Burbank
+    - Daly City
+    - Rialto
+    - Santa Maria
+    - El Cajon
+    - San Mateo
+    - Clovis
+    - Jurupa Valley
+    - Compton
+    - South Gate
+    - Vista
+    - Mission Viejo
+    - Vacaville
+    - Carson
+    - Hesperia
+    - Redding
+    - Santa Monica
+    - Westminster
+    - Santa Barbara
+    - Chico
+    - Newport Beach
+    - San Leandro
+    - San Marcos
+    - Whittier
+    - Hawthorne
+    - Citrus Heights
+    - Alhambra
+    - Tracy
+    - Buena Park
+    - Menifee
+    - Hemet
+    - Lakewood
+    - Merced
+    - Chino
+    - Indio
+    - Redwood City
+    - Lake Forest
+    - Napa
+    - Tustin
+    - Bellflower
+    - Baldwin Park
+    - Chino Hills
+    - Mountain View
+    - Alameda
+    - Upland
+    - Folsom
+    - San Ramon
+    - Pleasanton
+    - Lynwood
+    - Union City
+    - Apple Valley
+    - Redlands
+    - Turlock
+    - Perris
+    - Manteca
+    - Milpitas
+    - Redondo Beach
+    - Davis
+    - Camarillo
+    - Yuba City
+    - Rancho Cordova
+    - Palo Alto
+    - Yorba Linda
+    - Walnut Creek
+    - South San Francisco
+    - San Clemente
+    - Pittsburg
+    - Laguna Niguel
+    - Lodi
+    - Madera
+    - National City
+    - La Mesa
+    - Arcadia
+    - Cypress
+    - Ceres
+    - Cupertino
+    - Dublin
+    - Encinitas
+    - Gardena
+    - Hanford
+    - Highland
+    - La Habra
+    - Montebello
+    - Monterey Park
+    - Novato
+    - Ojai
+    - Palm Desert
+    - Palm Springs
+    - Paramount
+    - Petaluma
+    - Pico Rivera
+    - Placentia
+    - Porterville
+    - Poway
+    - Rocklin
+    - Rosemead
+    - San Gabriel
+    - San Jacinto
+    - San Luis Obispo
+    - San Rafael
+    - Santa Cruz
+    - Santa Fe Springs
+    - Saratoga
+    - Stanton
+    - Temple City
+    - Tulare
+    - Watsonville
+    - West Hollywood
+    - West Sacramento
+    - Woodland
+    - Agoura Hills
+    - Aliso Viejo
+    - American Canyon
+    - Arcata
+    - Arroyo Grande
+    - Atascadero
+    - Atherton
+    - Atwater
+    - Auburn
+    - Avenal
+    - Azusa
+    - Banning
+    - Barstow
+    - Beaumont
+    - Bell
+    - Bell Gardens
+    - Belmont
+    - Benicia
+    - Beverly Hills
+    - Big Bear Lake
+    - Bishop
+    - Blythe
+    - Bradbury
+    - Brawley
+    - Brea
+    - Brentwood
+    - Brisbane
+    - Burlingame
+    - Calabasas
+    - Calexico
+    - California City
+    - Calimesa
+    - Calipatria
+    - Calistoga
+    - Campbell
+    - Canyon Lake
+    - Capitola
+    - Carmel-by-the-Sea
+    - Carpinteria
+    - Cathedral City
+    - Cerritos
+    - Claremont
+    - Clayton
+    - Clearlake
+    - Cloverdale
+    - Coachella
+    - Coalinga
+    - Colfax
+    - Colma
+    - Colton
+    - Commerce
+    - Corcoran
+    - Corning
+    - Corte Madera
+    - Covina
+    - Crescent City
+    - Cudahy
+    - Culver City
+    - Dana Point
+    - Danville
+    - Del Mar
+    - Del Rey Oaks
+    - Desert Hot Springs
+    - Diamond Bar
+    - Dinuba
+    - Dixon
+    - Dorris
+    - Dos Palos
+    - Duarte
+    - East Palo Alto
+    - El Centro
+    - El Cerrito
+    - El Segundo
+    - Emeryville
+    - Escalon
+    - Etna
+    - Eureka
+    - Exeter
+    - Fairfax
+    - Farmersville
+    - Fillmore
+    - Firebaugh
+    - Fort Bragg
+    - Fort Jones
+    - Fortuna
+    - Foster City
+    - Fowler
+    - Galt
+    - Goleta
+    - Gonzales
+    - Grand Terrace
+    - Grass Valley
+    - Greenfield
+    - Gridley
+    - Grover Beach
+    - Guadalupe
+    - Gustine
+    - Half Moon Bay
+    - Hawaiian Gardens
+    - Healdsburg
+    - Hercules
+    - Hermosa Beach
+    - Hidden Hills
+    - Hillsborough
+    - Hollister
+    - Holtville
+    - Hughson
+    - Huron
+    - Imperial
+    - Imperial Beach
+    - Indian Wells
+    - Industry
+    - Ione
+    - Irwindale
+    - Isleton
+    - Jackson
+    - Kerman
+    - King City
+    - Kingsburg
+    - La Cañada Flintridge
+    - La Mirada
+    - La Palma
+    - La Puente
+    - La Quinta
+    - La Verne
+    - Lafayette
+    - Laguna Beach
+    - Laguna Hills
+    - Laguna Woods
+    - Lake Elsinore
+    - Lakeport
+    - Larkspur
+    - Lathrop
+    - Lawndale
+    - Lemon Grove
+    - Lemoore
+    - Lincoln
+    - Lindsay
+    - Live Oak
+    - Livermore
+    - Livingston
+    - Loma Linda
+    - Lomita
+    - Lompoc
+    - Loomis
+    - Los Alamitos
+    - Los Altos
+    - Los Altos Hills
+    - Los Banos
+    - Los Gatos
+    - Loyalton
+    - Malibu
+    - Mammoth Lakes
+    - Manhattan Beach
+    - Maricopa
+    - Marina
+    - Martinez
+    - Marysville
+    - Maywood
+    - McFarland
+    - Mendota
+    - Menlo Park
+    - Millbrae
+    - Mill Valley
+    - Montague
+    - Montclair
+    - Monte Sereno
+    - Moorpark
+    - Moraga
+    - Morgan Hill
+    - Morro Bay
+    - Mount Shasta
+    - Needles
+    - Nevada City
+    - Newman
+    - Norco
+    - Oakdale
+    - Oakley
+    - Orinda
+    - Orland
+    - Oroville
+    - Pacifica
+    - Pacific Grove
+    - Palos Verdes Estates
+    - Paradise
+    - Parlier
+    - Patterson
+    - Piedmont
+    - Pinole
+    - Pismo Beach
+    - Point Arena
+    - Port Hueneme
+    - Portola
+    - Portola Valley
+    - Rancho Mirage
+    - Rancho Palos Verdes
+    - Rancho Santa Margarita
+    - Reedley
+    - Ridgecrest
+    - Rio Dell
+    - Rio Vista
+    - Ripon
+    - Riverbank
+    - Rohnert Park
+    - Rolling Hills
+    - Rolling Hills Estates
+    - Ross
+    - Saint Helena
+    - San Anselmo
+    - San Bruno
+    - San Carlos
+    - San Dimas
+    - San Fernando
+    - San Joaquin
+    - San Juan Bautista
+    - San Juan Capistrano
+    - San Marino
+    - Sand City
+    - Sanger
+    - Sausalito
+    - Scotts Valley
+    - Seal Beach
+    - Seaside
+    - Sebastopol
+    - Selma
+    - Shafter
+    - Shasta Lake
+    - Sierra Madre
+    - Signal Hill
+    - Solana Beach
+    - Soledad
+    - Solvang
+    - Sonoma
+    - Sonora
+    - South El Monte
+    - South Lake Tahoe
+    - South Pasadena
+    - Suisun City
+    - Susanville
+    - Sutter Creek
+    - Taft
+    - Tehachapi
+    - Tehama
+    - Thibodaux
+    - Tiburon
+    - Truckee
+    - Twentynine Palms
+    - Ukiah
+    - Unincorporated
+    - Villa Park
+    - Waterford
+    - Weed
+    - Westlake Village
+    - Westmorland
+    - Wheatland
+    - Wildomar
+    - Williams
+    - Willits
+    - Willows
+    - Windsor
+    - Winters
+    - Woodlake
+    - Woodside
+    - Yountville
+    - Yreka
+    - Yucaipa
+
 - intent: greet
   examples: |
-    - hello
     - hi
-    - hey
-    - good morning
-    - good evening
-    - good afternoon
-    - greetings
-    - hi there
-    - hello there
+    - hello
     - hey there
+    - good morning
+    - let's start
+    - hey
+    - hi there
     - howdy
-    - what's up
+    - greetings
+    - good afternoon
+    - good evening
     - yo
+    - what's up
+    - hola
     - start
     - begin
-    - help me
 
 - intent: goodbye
   examples: |
     - bye
     - goodbye
     - see you later
-    - take care
-    - farewell
-    - bye bye
-    - catch you later
-    - until next time
-    - see you
-    - later
-    - have a good day
-    - talk to you later
     - exit
-    - quit
-    - end
 
 - intent: ask_weather
   examples: |
     - what's the weather like in [New York](location)?
-    - how's the weather in [London](location)?
-    - weather forecast for [Paris](location)
-    - tell me about the weather in [Tokyo](location)
-    - what's the temperature in [Sydney](location)?
-    - is it raining in [Mumbai](location)?
-    - weather update for [Berlin](location)
-    - how hot is it in [Dubai](location)?
-    - what's the climate like in [Singapore](location)?
-    - weather conditions in [Rome](location)
-    - will it be sunny in [Barcelona](location)?
-    - temperature in [Amsterdam](location)
-    - weather report for [Bangkok](location)
-    - what's the weather forecast for [Seattle](location)?
-    - how's the weather looking in [Vancouver](location)?
-    - climate information for [Cairo](location)
-    - weather in [Moscow](location) today
-    - check weather
-    - weather information
-    - I want to check weather for [Delhi](location)
-    - weather for [Mumbai](location)
-    - [Bangalore](location) weather
-    - tell me [Chennai](location) weather
-    - I want to check weather for a different city
+    - how is the weather in [Tokyo](location)?
+    - weather in [Mumbai](location)
+    - give me the weather forecast
+    - weather please
+    - Weather in [London](location)
+    - Weather in [Paris](location)
+    - Weather in [Geneva](location)
+    - Weather in [Tokyo](location)
+    - weather in [london](location)
+    - weather in [paris](location)
+    - weather [london](location)
+    - weather [paris](location)
+    - check weather in [Aurangabad](location)
+    - tell me the weather in [Geneva](location)
+    - check the weather
+    - what is the weather
+    - how's the weather looking
 
 - intent: recommend_packing
   examples: |
     - what should I pack for [Miami](location)?
-    - packing suggestions for [Iceland](location)
-    - what to bring to [Thailand](location)?
-    - packing list for [Norway](location) in [December](date)
-    - what clothes for [India](location)?
-    - packing recommendations for [Canada](location)
-    - what should I pack for my trip to [Japan](location)?
-    - help me pack for [Australia](location)
-    - clothing suggestions for [Russia](location)
-    - what to wear in [Brazil](location)?
-    - packing advice for [Egypt](location)
-    - what items to pack for [Switzerland](location)?
-    - travel packing for [Kenya](location)
-    - what should I bring to [Chile](location) in [summer](date)?
-    - packing checklist for [Germany](location)
+    - give me packing suggestions for [Iceland](location)
     - help me pack for [Delhi](location)
-    - packing tips for [Goa](location)
-    - what to pack for [Manali](location)
-    - packing help
-    - packing suggestions
-    - I want packing advice for a different destination
-    - help me pack for my trip to [delhi](location)
-    - help to plan a travel to [delhi](location)
-    - help me plan travel to [mumbai](location)
-    - assist with trip planning for [bangalore](location)
+    - packing list
+    - pack for [Sydney](location)
+    - packing tips for [Tokyo](location)
+    - what to bring to [Berlin](location)
+    - suitcase items for [Cairo](location)
+    - what clothes do I need in [Paris](location)
+    - what clothes do I need
+    - packing advice
 
 - intent: start_travel_planning
   examples: |
-    - I want to plan a complete trip
-    - help me plan my trip
-    - start trip planning
-    - plan my travel
-    - I need help planning a trip
-    - complete trip planning
-    - travel planning assistance
-    - help me organize my trip
-    - I want to plan everything
-    - full trip planning
-
-- intent: faq_what_is_rasa
-  examples: |
-    - what is rasa?
-    - tell me about rasa
-    - what is rasa framework?
-    - explain rasa
-    - rasa information
-    - about rasa
-    - rasa details
-
-- intent: faq_who_built_you
-  examples: |
-    - who built you?
-    - who created you?
-    - who made you?
-    - who is your creator?
-    - who developed you?
-    - about you
-    - your creator
-    - who are you
-
-- intent: faq_trip_planning
-  examples: |
-    - how can I plan my trip?
-    - help me plan my journey
-    - trip planning assistance
-    - how do you help with travel?
-    - what can you do?
-    - how does this work?
-    - what services do you provide?
-    - how to plan trips
-    - travel help
-    - trip help
+    - I want to plan a complete trip to [New Delhi](location)
+    - help me plan my trip to [Paris](location)
+    - plan a trip to [Dubai](location)
+    - I need to plan a journey to [London](location)
+    - let's plan a trip
+    - I want to travel to [Tokyo](location)
+    - planning travel to [Karachi](location)
+    - help me visit [Sydney](location)
+    - arrange trip for [Berlin](location)
+    - vacation in [Bangkok](location)
 
 - intent: inform
   examples: |
     - [New York](location)
-    - [December 15th](date)
-    - I'm going to [London](location)
-    - my destination is [Paris](location)
-    - traveling to [Tokyo](location)
-    - [January 1st to January 10th](travel_dates)
-    - [March 5th to March 12th](travel_dates)
-    - from [March 5th](date) to [March 12th](date)
-    - [next week](date)
-    - [this weekend](date)
-    - [tomorrow](date)
-    - [December 20th to December 28th](travel_dates)
-    - [June 10th to June 20th](travel_dates)
-    - [February 1st to February 15th](travel_dates)
-    - [Delhi](location)
-    - [Mumbai](location)
-    - [Bangalore](location)
-    - [Chennai](location)
-    - [Kolkata](location)
-    - [Hyderabad](location)
-    - [Pune](location)
-    - [Ahmedabad](location)
-    - [Jaipur](location)
-    - [Lucknow](location)
-    - [this month](date)
-    - [next month](date)
-    - [same day](travel_dates)
-    - [weekend trip](travel_dates)
-    - [one week](travel_dates)
-    - I want to visit a different city
-    - I want to specify exact date
-    - I want to specify exact return date
+    - [London](location)
+    - It's [Paris](location)
+    - [Mumbai](location) please
+    - How about [Dubai](location)?
+    - try [Sydney](location)
+    - let's check [Berlin](location)
+    - what about [Tokyo](location)
+    - I'm interested in [Rome](location)
 
-- intent: recommend_packing
+- intent: change_city
   examples: |
-    - I want to travel to [abu dhabi](location)
-    - I want to go to [shimla](location)  
-    - planning to visit [dubai](location)
-    - traveling to [delhi](location)
-    - going to [mumbai](location)
-    - trip to [bangalore](location)
-    - I want to travel to [goa](location)
-    - help me plan for [chennai](location)
-    - visiting [kolkata](location)
-    - journey to [hyderabad](location)
+    - Check another city
+    - weather for a different place
+    - pack for another city
+    - packing tips for a different destination
+    - try another one
+    - let's try a different city
+    - I want to check another location
+    - can we look at a different city
+    - what about another destination
+    - change the city
+    - switch to another location
+
+- intent: out_of_scope
+  examples: |
+    - what's your favorite color
+    - tell me a joke
+    - who is the president
+    - what is the meaning of life
+    - can you order food for me
+    - book a flight
+    - make a hotel reservation
 
 - intent: affirm
   examples: |
     - yes
-    - yeah
-    - yep
     - sure
-    - of course
-    - that's right
-    - correct
     - absolutely
-    - definitely
-    - that sounds good
+    - correct
+    - that's right
+    - yeah
     - ok
-    - okay
-    - right
+    - sounds good
+
+# Add these examples to existing intents
+
+- intent: change_city
+  examples: |
+    # Add these examples
+    - Plan a trip to another city
+    - I want to plan for a different city
+    - Let's try planning for another location
+    - Change to a different destination
+    - Plan for another place
+
+- intent: start_travel_planning
+  examples: |
+    # Add these examples
+    - Plan a trip to [Mumbai](location)
+    - Plan my travel to [London](location)
+    - Make a trip plan for [Paris](location)
+    - Create a travel plan for [Tokyo](location)
+    - Plan a visit to [New York](location)
 
 - intent: deny
   examples: |
     - no
-    - nope
     - not really
-    - I don't think so
-    - that's not right
+    - nope
     - incorrect
-    - no way
+    - I don't think so
+    - that's wrong
     - definitely not
-    - absolutely not
-    - I disagree
-    - nah
-    - never
 
-- intent: nlu_fallback
+- intent: faq_what_is_rasa
   examples: |
-    - what's your favorite color?
-    - do you like pizza?
-    - tell me a joke
-    - what's the meaning of life?
-    - sing me a song
-    - what's your age?
-    - are you married?
-    - do you have pets?
-    - what's your hobby?
-    - recommend a movie
-    - how are you
-    - random stuff
-    - blah blah
-    - asdfgh
-    - 12345
+    - What is Rasa?
+    - Can you explain Rasa?
+    - Tell me about Rasa.
 
+- intent: faq_who_built_you
+  examples: |
+    - Who built you?
+    - Who created this bot?
+    - Who developed you?

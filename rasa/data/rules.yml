@@ -1,17 +1,27 @@
+# -------------------------
+# data/rules.yml (Harmonized Version)
+# -------------------------
 version: "3.1"
+
 rules:
+- rule: Greet the user anytime they greet
+  steps:
+  - intent: greet
+  - action: utter_greet
+  
 - rule: Say goodbye anytime the user says goodbye
   steps:
   - intent: goodbye
   - action: utter_goodbye
 
-- rule: Activate travel info form for complete planning
+# --- Form Activation and Submission ---
+- rule: Activate the travel planning form
   steps:
   - intent: start_travel_planning
   - action: travel_info_form
   - active_loop: travel_info_form
 
-- rule: Submit travel info form
+- rule: Submit the travel planning form
   condition:
   - active_loop: travel_info_form
   steps:
@@ -23,22 +33,62 @@ rules:
   - action: action_get_weather
   - action: action_recommend_packing
 
-- rule: Handle fallback with guidance
+# --- Direct Weather and Packing Requests ---
+- rule: Handle direct weather request
   steps:
-  - intent: nlu_fallback
-  - action: utter_default_fallback
+  - intent: ask_weather
+  - action: action_get_weather
 
-- rule: FAQ responses with navigation
+- rule: Handle direct packing request
+  steps:
+  - intent: recommend_packing
+  - action: action_recommend_packing
+
+# --- City Management ---
+- rule: Handle changing city
+  steps:
+  - intent: change_city
+  - action: action_ask_for_new_city
+
+# --- Only handle unprompted city information ---
+- rule: Handle unprompted city information
+  condition:
+  # Fix: The correct format for slot_was_set in conditions
+  - slot_was_set:
+    - destination_city: null
+  steps:
+  - intent: inform
+  - action: action_clarify_city_usage
+
+# --- FAQ Rules ---
+- rule: Handle FAQ for 'what is rasa'
   steps:
   - intent: faq_what_is_rasa
   - action: utter_faq_what_is_rasa
 
-- rule: FAQ who built response with navigation
+- rule: Handle FAQ for 'who built you'
   steps:
   - intent: faq_who_built_you
   - action: utter_faq_who_built_you
 
-- rule: FAQ trip planning response with navigation
+# --- Out of Scope ---
+- rule: Handle out-of-scope questions
   steps:
-  - intent: faq_trip_planning
-  - action: utter_faq_how_to_plan_trip
+  - intent: out_of_scope
+  - action: utter_out_of_scope
+
+# --- Use affirm/deny to handle responses ---
+- rule: Handle affirmative response after weather
+  steps:
+  - intent: affirm
+  - action: action_recommend_packing
+
+- rule: Handle negative response
+  steps:
+  - intent: deny
+  - action: utter_goodbye
+
+- rule: Default fallback
+  steps:
+  - intent: nlu_fallback
+  - action: utter_default

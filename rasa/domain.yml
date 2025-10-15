@@ -1,215 +1,98 @@
-version: '3.1'
+version: "3.1"
 
 intents:
   - greet
   - goodbye
   - ask_weather
   - recommend_packing
-  - faq_what_is_rasa
-  - faq_who_built_you
-  - faq_trip_planning
+  - start_travel_planning  # Added missing intent
   - inform
+  - change_city
+  - out_of_scope
   - affirm
   - deny
-  - nlu_fallback
-  - start_travel_planning
+  - faq_what_is_rasa
+  - faq_who_built_you
 
 entities:
   - location
-  - date
-  - travel_dates
 
 slots:
   destination_city:
     type: text
-    influence_conversation: true
     mappings:
-      - type: from_entity
-        entity: location
-      - type: from_text
-        conditions:
-          - active_loop: travel_info_form
-            requested_slot: destination_city
-  start_date:
-    type: text
-    influence_conversation: true
-    mappings:
-      - type: from_entity
-        entity: date
-      - type: from_text
-        conditions:
-          - active_loop: travel_info_form
-            requested_slot: start_date
-  end_date:
-    type: text
-    influence_conversation: true
-    mappings:
-      - type: from_entity
-        entity: travel_dates
-      - type: from_text
-        conditions:
-          - active_loop: travel_info_form
-            requested_slot: end_date
+    - type: from_entity
+      entity: location
   weather_info:
     type: text
-    influence_conversation: false
     mappings:
-      - type: custom
-  packing_suggestions:
+    - type: custom
+  start_date:  # Added missing slot
+    type: text
+    mappings:
+    - type: from_text
+      conditions:
+      - active_loop: travel_info_form
+        requested_slot: start_date
+  end_date:  # Added missing slot
+    type: text
+    mappings:
+    - type: from_text
+      conditions:
+      - active_loop: travel_info_form
+        requested_slot: end_date
+  requested_slot:  # Required for forms
     type: text
     influence_conversation: false
     mappings:
-      - type: custom
+    - type: custom
 
 forms:
-  travel_info_form:
+  travel_info_form:  # Added missing form
     required_slots:
       - destination_city
       - start_date
       - end_date
 
 responses:
-  # Other responses remain the same... (utter_greet, utter_goodbye, etc.)
-  # --- PASTE YOUR OTHER RESPONSES HERE ---
-
   utter_greet:
-    - text: "🧳 Welcome to your Travel Assistant Bot! I'm here to help you plan your perfect trip."
-      buttons:
-        - title: "🌤️ Check Weather"
-          payload: "/ask_weather"
-        - title: "🎒 Get Packing Tips"
-          payload: "/recommend_packing"
-        - title: "📋 Plan Complete Trip"
-          payload: "/start_travel_planning"
-        - title: "❓ FAQ & Help"
-          payload: "/faq_trip_planning"
+    - text: "👋 Hello! I'm your travel assistant. I can help with weather forecasts and packing suggestions. What city are you planning to visit?"
 
   utter_goodbye:
-    - text: "Safe travels! Have a wonderful trip! 🌟 Feel free to come back anytime for travel assistance."
-      buttons:
-        - title: "🔄 Start New Planning"
-          payload: "/greet"
-
-  utter_ask_destination_city:
-    - text: "Which city are you planning to visit? 🏙️"
-      buttons:
-        - title: "Popular: Delhi"
-          payload: '/inform{"location":"Delhi"}'
-        - title: "Popular: Mumbai"
-          payload: '/inform{"location":"Mumbai"}'
-        - title: "Popular: Paris"
-          payload: '/inform{"location":"Paris"}'
-        - title: "Type Custom City"
-          payload: "I want to visit a different city"
-
-  utter_ask_start_date:
-    - text: "When are you planning to start your trip? 📅"
-      buttons:
-        - title: "This Weekend"
-          payload: '/inform{"date":"this weekend"}'
-        - title: "Next Week"
-          payload: '/inform{"date":"next week"}'
-        - title: "Next Month"
-          payload: '/inform{"date":"next month"}'
-        - title: "Type Specific Date"
-          payload: "I want to specify exact date"
-
-  utter_ask_end_date:
-    - text: "When will you return from your trip? 🔙"
-      buttons:
-        - title: "Same Day Return"
-          payload: '/inform{"travel_dates":"same day"}'
-        - title: "Weekend Trip (2-3 days)"
-          payload: '/inform{"travel_dates":"weekend trip"}'
-        - title: "One Week"
-          payload: '/inform{"travel_dates":"one week"}'
-        - title: "Type Custom Duration"
-          payload: "I want to specify exact return date"
-
-  utter_faq_what_is_rasa:
-    - text: "🤖 Rasa is an open-source framework for building conversational AI assistants and chatbots. It provides tools for natural language understanding, dialogue management, and integration with external systems."
-      buttons:
-        - title: "🏠 Back to Main Menu"
-          payload: "/greet"
-        - title: "👨‍💻 Who built this bot?"
-          payload: "/faq_who_built_you"
-        - title: "🧳 Start Trip Planning"
-          payload: "/start_travel_planning"
-
-  utter_faq_who_built_you:
-    - text: "👨‍💻 I'm a Travel Assistant Bot built using the Rasa framework for the Yoliday Internship Assessment. I was created to help travelers get weather information and packing recommendations for their trips."
-      buttons:
-        - title: "🏠 Back to Main Menu"
-          payload: "/greet"
-        - title: "🤖 What is Rasa?"
-          payload: "/faq_what_is_rasa"
-        - title: "📋 How to plan trips?"
-          payload: "/faq_trip_planning"
-
-  utter_faq_how_to_plan_trip:
-    - text: "✈️ I can help you plan your trip in several ways:\n\n🌤️ **Weather Forecasts** - Get current weather for any destination\n🎒 **Smart Packing** - Recommendations based on weather conditions\n📋 **Complete Planning** - Full trip planning with dates and details\n❓ **24/7 Support** - Ask me anything about travel planning!"
-      buttons:
-        - title: "🌤️ Check Weather Now"
-          payload: "/ask_weather"
-        - title: "🎒 Get Packing Tips"
-          payload: "/recommend_packing"
-        - title: "📋 Start Full Planning"
-          payload: "/start_travel_planning"
-        - title: "🏠 Main Menu"
-          payload: "/greet"
-
-  utter_default_fallback:
-    - text: "🤔 I didn't quite understand that. I'm specialized in travel assistance. Here's what I can help you with:"
-      buttons:
-        - title: "🌤️ Weather Information"
-          payload: "/ask_weather"
-        - title: "🎒 Packing Suggestions"
-          payload: "/recommend_packing"
-        - title: "📋 Complete Trip Planning"
-          payload: "/start_travel_planning"
-        - title: "❓ FAQ & Help"
-          payload: "/faq_trip_planning"
-
-  utter_submit:
-    - text: "Perfect! Let me get the weather information and packing suggestions for your trip to {destination_city}. 🔍"
-
+    - text: "👋 Goodbye! Have a great trip!"
+  
+  utter_submit:  # Added missing response
+    - text: "Thanks for providing your travel information! I'll help you prepare for your trip to {destination_city}."
+  
   utter_after_weather:
-    - text: "What would you like to do next? 🤔"
-      buttons:
-        - title: "🎒 Get Packing Tips"
-          payload: "/recommend_packing"
-        - title: "📋 Plan Complete Trip"  
-          payload: "/start_travel_planning"
-        - title: "🌤️ Check Another City"
-          payload: "/ask_weather"
-        - title: "🏠 Main Menu"
-          payload: "/greet"
-
+    - text: "Would you like packing suggestions for {destination_city} based on the weather?"
+  
   utter_after_packing:
-    - text: "Hope that helps with your packing! What's next? 🌟"
-      buttons:
-        - title: "🌤️ Check Weather"
-          payload: "/ask_weather"
-        - title: "📋 Plan Complete Trip"
-          payload: "/start_travel_planning"  
-        - title: "🎒 Pack for Another City"
-          payload: "/recommend_packing"
-        - title: "🏠 Main Menu"
-          payload: "/greet"
-
-  # CORRECTED a bug where {destination_city} might not be set
-  utter_weather_options:
-    - text: "I can provide weather information. Which city are you interested in?"
-    
-  # CORRECTED a bug where {destination_city} might not be set
-  utter_packing_options:
-    - text: "I can help with packing suggestions. What is your destination?"
+    - text: "Is there anything else you'd like to know about {destination_city}?"
+  
+  utter_ask_destination_city:
+    - text: "Which city are you planning to visit?"
+  
+  utter_clarify_city_usage:
+    - text: "I see you're interested in {destination_city}. Would you like to know about the weather or get packing suggestions?"
+  
+  utter_out_of_scope:
+    - text: "Sorry, I'm focused on helping with travel weather and packing. I can't help with that request."
+  
+  utter_faq_what_is_rasa:
+    - text: "Rasa is an open source framework that powers this conversational AI assistant."
+  
+  utter_faq_who_built_you:
+    - text: "I was built by a developer for the Yoliday Internship Assessment to demonstrate travel assistant capabilities."
+  utter_default:
+    - text: "I'm not sure how to help with that. You can ask me about the weather or packing suggestions for a specific city."
 
 actions:
   - action_get_weather
   - action_recommend_packing
-  - action_provide_weather_options
-  - action_provide_packing_options
+  - action_ask_for_new_city
+  - action_clarify_city_usage  # Added missing action
+  - action_reset_slots_and_ask
   - validate_travel_info_form
 
 session_config:

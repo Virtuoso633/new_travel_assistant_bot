@@ -1,0 +1,4 @@
+.env
+.rasa
+rasa/models/model.tar.gz
+rasa/frontend/nginx.conf

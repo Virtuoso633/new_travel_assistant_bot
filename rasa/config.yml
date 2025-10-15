@@ -1,16 +1,9 @@
-# The config recipe.
-# https://rasa.com/docs/rasa/model-configuration/
+# -------------------------
+# config.yml (Improved Entity Recognition)
+# -------------------------
 recipe: default.v1
-
-# The assistant project unique identifier
-# This default value must be replaced with a unique assistant name within your deployment
-assistant_id: 20250613-164510-oily-sump
-
-# Configuration for Rasa NLU.
-# https://rasa.com/docs/rasa/nlu/components/
+assistant_id: assistant
 language: en
-
-version: '3.1'
 
 pipeline:
   - name: WhitespaceTokenizer
@@ -21,21 +14,31 @@ pipeline:
     analyzer: char_wb
     min_ngram: 1
     max_ngram: 4
+  # Add this component to better extract city entities
+  - name: RegexEntityExtractor
+    case_sensitive: False
+    use_lookup_tables: True
+    use_regexes: True
   - name: DIETClassifier
     epochs: 120
     constrain_similarities: true
     model_confidence: softmax
+    entity_recognition: True
+    # Tweak these values for better entity recognition
+    number_of_transformer_layers: 2
+    transformer_size: 256
+    weight_sparsity: 0.7
   - name: EntitySynonymMapper
   - name: ResponseSelector
     epochs: 120
   - name: FallbackClassifier
-    threshold: 0.4  # Increased from 0.3
-    ambiguity_threshold: 0.15  # Increased from 0.1
+    threshold: 0.3
+    ambiguity_threshold: 0.1
 
 policies:
   - name: MemoizationPolicy
   - name: RulePolicy
-    core_fallback_threshold: 0.5  # Increased from 0.4
+    core_fallback_threshold: 0.5
   - name: UnexpecTEDIntentPolicy
     max_history: 5
     epochs: 120
