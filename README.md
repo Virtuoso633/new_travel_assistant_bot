@@ -20,26 +20,27 @@ A conversational AI assistant for travel planning, weather information, and smar
 
 ---
 
-## Project Structure
+## 📂 Project Structure
 
-```
+The project is organized as follows:
+
+```text
 new_travel_assistant_bot/
 ├── rasa/
-│   ├── actions/              # Custom action code
-│   ├── data/                 # NLU, stories, rules
-│   ├── models/               # Trained Rasa models
-│   ├── frontend/             # React frontend
-│   ├── domain.yml            # Rasa domain
-│   ├── config.yml            # Rasa config
-│   ├── endpoints.yml         # Rasa endpoints
-│   ├── Dockerfile.rasa       # Dockerfile for Rasa server
-│   ├── Dockerfile.actions    # Dockerfile for action server
-│   └── requirements.txt      # Python dependencies
-├── docker-compose.yml        # Multi-service orchestration
-```
-
+│   ├── actions/              # Custom Python code for action server
+│   ├── data/                 # NLU training data, stories, and rules
+│   ├── models/               # Directory for storing trained Rasa models
+│   ├── frontend/             # React-based chat interface
+│   ├── domain.yml            # The assistant's domain configuration
+│   ├── config.yml            # NLU and Core pipeline configuration
+│   ├── endpoints.yml         # Connection settings (Action server, etc.)
+│   ├── Dockerfile.rasa       # Build instructions for the Rasa Core server
+│   ├── Dockerfile.actions    # Build instructions for the Action server
+│   └── requirements.txt      # Python dependencies for custom actions
+├── docker-compose.yml        # Orchestration for Rasa, Actions, and Frontend
+└── README.md
 ---
-
+```
 ## Running Locally (No Docker)
 
 ### 1. **Install Python & Node.js**
