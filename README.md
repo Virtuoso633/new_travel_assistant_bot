@@ -144,5 +144,3 @@ MIT License
 
 ---
 
-**You can copy this as your README.md in the project root.**  
-Let me know if you want to add badges, screenshots, or further customization!
